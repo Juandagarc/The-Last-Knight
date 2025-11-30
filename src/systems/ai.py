@@ -169,9 +169,7 @@ class PatrolBehavior(AIBehavior):
     def _advance_to_next_point(self) -> None:
         """Advance to the next patrol point."""
         if self.patrol_points:
-            self.current_point_index = (self.current_point_index + 1) % len(
-                self.patrol_points
-            )
+            self.current_point_index = (self.current_point_index + 1) % len(self.patrol_points)
 
 
 class ChaseBehavior(AIBehavior):
@@ -250,9 +248,7 @@ class ChaseBehavior(AIBehavior):
 
         return None
 
-    def _get_distance_to_target(
-        self, entity: "Entity", target: "Entity"
-    ) -> float:
+    def _get_distance_to_target(self, entity: "Entity", target: "Entity") -> float:
         """Calculate distance to target."""
         return pygame.math.Vector2(
             target.pos.x - entity.pos.x,
@@ -340,9 +336,7 @@ class AttackBehavior(AIBehavior):
 
         return None
 
-    def _get_distance_to_target(
-        self, entity: "Entity", target: "Entity"
-    ) -> float:
+    def _get_distance_to_target(self, entity: "Entity", target: "Entity") -> float:
         """Calculate distance to target."""
         return pygame.math.Vector2(
             target.pos.x - entity.pos.x,
@@ -588,7 +582,8 @@ class UtilityScore:
         Returns:
             Utility score.
         """
-        return max(0.0, min(1.0, value ** exponent))
+        result: float = max(0.0, min(1.0, value**exponent))
+        return result
 
     @staticmethod
     def logistic(value: float, steepness: float = 10.0, midpoint: float = 0.5) -> float:
@@ -662,7 +657,7 @@ class AIDecisionMaker:
         }
 
         evaluator = evaluators.get(action, lambda _: 0.0)
-        base_score = evaluator(context)
+        base_score: float = evaluator(context)
 
         # Add controlled randomness
         if self.randomness > 0:
@@ -860,9 +855,7 @@ class SmartChaseBehavior(AIBehavior):
         # Calculate target velocity
         current_target_pos = pygame.math.Vector2(target.pos)
         if self._last_target_pos is not None:
-            self._target_velocity = (current_target_pos - self._last_target_pos) / max(
-                dt, 0.001
-            )
+            self._target_velocity = (current_target_pos - self._last_target_pos) / max(dt, 0.001)
         self._last_target_pos = current_target_pos.copy()
 
         distance = self._get_distance_to_target(entity, target)
