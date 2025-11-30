@@ -6,6 +6,7 @@ from src.systems.collision import (
     check_aabb_collision,
     get_collision_side,
 )
+from src.systems.input_handler import InputHandler
 from src.systems.physics import PhysicsBody
 
 __all__ = [
@@ -15,5 +16,6 @@ __all__ = [
     "CollisionManager",
     "check_aabb_collision",
     "get_collision_side",
+    "InputHandler",
     "PhysicsBody",
 ]
