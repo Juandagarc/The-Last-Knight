@@ -16,6 +16,9 @@ from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Tuple
 import pygame
 
 from src.core.settings import (
+    AI_DECISION_COOLDOWN,
+    AI_DECISION_INTERVAL,
+    AI_TARGET_SPEED_THRESHOLD,
     ENEMY_ATTACK_COOLDOWN,
     ENEMY_ATTACK_DAMAGE,
     ENEMY_ATTACK_RANGE,
@@ -635,7 +638,7 @@ class AIDecisionMaker:
         self.aggression = max(0.0, min(1.0, aggression))
         self._action_history: List[AIAction] = []
         self._last_decision_time = 0.0
-        self._decision_cooldown = 0.2  # Minimum time between decisions
+        self._decision_cooldown = AI_DECISION_COOLDOWN
 
     def evaluate_action(self, action: AIAction, context: AIContext) -> float:
         """
@@ -794,7 +797,7 @@ class AIDecisionMaker:
 
         # Predict when target is moving and at medium range
         target_speed = context.target_velocity.length()
-        if target_speed < 0.5:
+        if target_speed < AI_TARGET_SPEED_THRESHOLD:
             return 0.1  # Target not moving much
 
         if (
@@ -1058,7 +1061,7 @@ class AIController:
         self.current_behavior: Optional[AIBehavior] = None
         self._time_since_attack = 0.0
         self._decision_timer = 0.0
-        self._decision_interval = 0.3  # Re-evaluate every 0.3 seconds
+        self._decision_interval = AI_DECISION_INTERVAL
 
     def register_behavior(self, behavior: AIBehavior) -> None:
         """

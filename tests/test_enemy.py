@@ -875,15 +875,15 @@ class TestFlankBehavior:
         assert behavior.name == "flank"
 
     def test_moves_perpendicular(self) -> None:
-        """Test flank moves somewhat perpendicular to target."""
-        behavior = FlankBehavior()
+        """Test flank moves entity when flanking."""
+        behavior = FlankBehavior(preferred_distance=30)  # Small preferred distance
         entity = MockEntity((0, 0))
-        target = MockEntity((100, 0))
+        target = MockEntity((100, 0))  # Far target triggers movement toward + perpendicular
 
         behavior.update(entity, 1 / 60, target)
 
-        # Should have some velocity
-        assert entity.velocity.x != 0 or entity.velocity.y == 0
+        # Should have some velocity toward the target (since far away)
+        assert entity.velocity.x != 0
 
     def test_transitions_to_attack_when_close(self) -> None:
         """Test flank transitions to attack when close enough."""
