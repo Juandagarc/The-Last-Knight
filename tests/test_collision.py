@@ -1,6 +1,5 @@
 """Tests for the Collision system."""
 
-import pytest
 import pygame
 
 from src.systems.collision import (
