@@ -22,6 +22,7 @@ class RunState(State):
         - jump: on jump input while on ground
         - fall: when not on ground
         - dash: on dash input
+        - attack: on attack input
     """
 
     name = "run"
@@ -68,6 +69,10 @@ class RunState(State):
         # Check dash first (highest priority)
         if input_handler.is_action_just_pressed("dash"):
             return "dash"
+
+        # Check attack
+        if input_handler.is_action_just_pressed("attack"):
+            return "attack"
 
         # Check jump
         if input_handler.is_action_just_pressed("jump"):
