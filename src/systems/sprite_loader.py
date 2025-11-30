@@ -1,8 +1,8 @@
 """Sprite sheet loader utility."""
+
 import json
 import logging
 from pathlib import Path
-from typing import Any
 
 import pygame
 
@@ -39,15 +39,12 @@ class SpriteLoader:
 
             for i in range(frame_count):
                 x = i * frame_width
-                frame = pygame.Surface(
-                    (frame_width, frame_height), pygame.SRCALPHA
-                )
+                frame = pygame.Surface((frame_width, frame_height), pygame.SRCALPHA)
                 frame.blit(sprite_sheet, (0, 0), (x, 0, frame_width, frame_height))
                 frames.append(frame)
 
             logger.debug(
-                f"Loaded {frame_count} frames from {image_path} "
-                f"({frame_width}x{frame_height})"
+                f"Loaded {frame_count} frames from {image_path} " f"({frame_width}x{frame_height})"
             )
             return frames
 
@@ -59,9 +56,7 @@ class SpriteLoader:
             return [placeholder] * frame_count
 
     @staticmethod
-    def load_animations_from_config(
-        config_path: str, sprite_dir: str
-    ) -> dict[str, Animation]:
+    def load_animations_from_config(config_path: str, sprite_dir: str) -> dict[str, Animation]:
         """
         Load all animations defined in a JSON configuration file.
 
@@ -82,16 +77,16 @@ class SpriteLoader:
 
             for anim_name, anim_data in config["animations"].items():
                 image_path = str(sprite_path / anim_data["file"])
-                
+
                 # Load the image to get its width
                 try:
                     sprite_sheet = pygame.image.load(image_path)
                     sheet_width = sprite_sheet.get_width()
                     frame_count = anim_data["frames"]
-                    
+
                     # Calculate frame width based on total width and frame count
                     frame_width = sheet_width // frame_count
-                    
+
                     frames = SpriteLoader.load_sprite_sheet(
                         image_path,
                         frame_width,
@@ -109,7 +104,7 @@ class SpriteLoader:
                         f"Created animation '{anim_name}' with {len(frames)} frames "
                         f"({frame_width}x{frame_height})"
                     )
-                    
+
                 except pygame.error as e:
                     logger.error(f"Failed to load sprite sheet for '{anim_name}': {e}")
                     continue
@@ -145,8 +140,7 @@ class SpriteLoader:
         flipped = {}
         for name, animation in animations.items():
             flipped_frames = [
-                pygame.transform.flip(frame, horizontal, vertical)
-                for frame in animation.frames
+                pygame.transform.flip(frame, horizontal, vertical) for frame in animation.frames
             ]
             flipped[name] = Animation(
                 frames=flipped_frames,
