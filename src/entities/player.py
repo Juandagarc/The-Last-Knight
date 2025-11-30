@@ -58,6 +58,9 @@ class Player(Entity):
             "wall_slide": (255, 200, 0),
             "wall_climb": (255, 150, 0),
             "dash": (255, 255, 255),
+            "attack1": (255, 0, 0),
+            "attack2": (200, 0, 0),
+            "attack3": (150, 0, 0),
         }
 
         for name, color in colors.items():
@@ -66,6 +69,7 @@ class Player(Entity):
 
     def _register_states(self) -> None:
         """Register all player states."""
+        from src.states.attack_state import AttackState
         from src.states.dash_state import DashState
         from src.states.fall_state import FallState
         from src.states.idle_state import IdleState
@@ -82,6 +86,7 @@ class Player(Entity):
             WallSlideState,
             WallClimbState,
             DashState,
+            AttackState,
         ]
 
         for state_class in state_classes:
