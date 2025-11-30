@@ -1,126 +1,169 @@
-"""Test script for knight sprite loading."""
-import logging
-import sys
+"""Tests for knight sprite loading and animations."""
 
+import pytest
 import pygame
 
 from src.core.resource_manager import ResourceManager
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(levelname)s - %(name)s - %(message)s"
-)
+from src.systems.animation import Animation
 
 
-def test_knight_sprites() -> None:
-    """Test loading and displaying knight animations."""
-    pygame.init()
-    screen = pygame.display.set_mode((1280, 720))
-    pygame.display.set_caption("Knight Sprite Test")
-    clock = pygame.time.Clock()
+class TestKnightSpriteLoading:
+    """Tests for loading knight sprite animations."""
 
-    # Load knight animations
-    resource_manager = ResourceManager()
-    animations = resource_manager.get_knight_animations()
+    def setup_method(self) -> None:
+        """Reset ResourceManager before each test."""
+        ResourceManager.reset_instance()
 
-    if not animations:
-        logging.error("Failed to load knight animations!")
-        return
+    def teardown_method(self) -> None:
+        """Clean up after each test."""
+        ResourceManager.reset_instance()
 
-    logging.info(f"Loaded {len(animations)} knight animations:")
-    for name in sorted(animations.keys()):
-        anim = animations[name]
-        logging.info(f"  - {name}: {len(anim.frames)} frames, loop={anim.loop}")
+    def test_knight_animations_load_successfully(self) -> None:
+        """Test that knight animations load without errors."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
 
-    # Test display
-    anim_names = list(animations.keys())
-    current_anim_index = 0
-    anim_time = 0.0
-    running = True
-    paused = False
+        assert animations is not None
+        assert isinstance(animations, dict)
+        assert len(animations) > 0
 
-    font = pygame.font.Font(None, 36)
-    small_font = pygame.font.Font(None, 24)
+    def test_knight_animations_are_animation_objects(self) -> None:
+        """Test that all loaded knight animations are Animation instances."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
 
-    while running:
-        dt = clock.tick(60) / 1000.0
+        for anim_name, animation in animations.items():
+            assert isinstance(animation, Animation), f"{anim_name} is not an Animation"
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                elif event.key == pygame.K_RIGHT:
-                    current_anim_index = (current_anim_index + 1) % len(anim_names)
-                    anim_time = 0.0
-                elif event.key == pygame.K_LEFT:
-                    current_anim_index = (current_anim_index - 1) % len(anim_names)
-                    anim_time = 0.0
-                elif event.key == pygame.K_SPACE:
-                    paused = not paused
-                elif event.key == pygame.K_r:
-                    anim_time = 0.0
+    def test_knight_animations_have_frames(self) -> None:
+        """Test that all knight animations have frames."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
 
-        # Update animation time
-        if not paused:
-            anim_time += dt
+        for anim_name, animation in animations.items():
+            assert len(animation.frames) > 0, f"{anim_name} has no frames"
+            assert all(
+                isinstance(frame, pygame.Surface) for frame in animation.frames
+            ), f"{anim_name} contains non-Surface frames"
 
-        # Get current animation
-        anim_name = anim_names[current_anim_index]
-        animation = animations[anim_name]
-        current_frame = animation.get_frame(anim_time)
+    def test_knight_idle_animation_exists(self) -> None:
+        """Test that the idle animation exists."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
 
-        # Draw
-        screen.fill((40, 40, 60))
+        assert "idle" in animations, "idle animation not found"
 
-        # Draw current frame (scaled up for visibility)
-        scaled_frame = pygame.transform.scale(current_frame, (320, 320))
-        frame_rect = scaled_frame.get_rect(center=(640, 360))
-        screen.blit(scaled_frame, frame_rect)
+    def test_knight_animation_frames_are_surfaces(self) -> None:
+        """Test that animation frames are pygame Surfaces."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
 
-        # Draw info
-        title_text = font.render(f"Animation: {anim_name}", True, (255, 255, 255))
-        screen.blit(title_text, (20, 20))
+        for anim_name, animation in animations.items():
+            for i, frame in enumerate(animation.frames):
+                assert isinstance(
+                    frame, pygame.Surface
+                ), f"{anim_name} frame {i} is not a Surface"
 
-        info_lines = [
-            f"Frames: {len(animation.frames)}",
-            f"Loop: {animation.loop}",
-            f"Duration: {animation.frame_duration}s per frame",
-            f"Time: {anim_time:.2f}s",
-            "",
-            "Controls:",
-            "  LEFT/RIGHT: Change animation",
-            "  SPACE: Pause/Resume",
-            "  R: Restart animation",
-            "  ESC: Exit",
-        ]
+    def test_knight_animations_have_valid_properties(self) -> None:
+        """Test that animations have valid frame_duration and loop properties."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
 
-        y_offset = 80
-        for line in info_lines:
-            text = small_font.render(line, True, (200, 200, 200))
-            screen.blit(text, (20, y_offset))
-            y_offset += 30
+        for anim_name, animation in animations.items():
+            assert animation.frame_duration > 0, f"{anim_name} has invalid frame_duration"
+            assert isinstance(animation.loop, bool), f"{anim_name} loop is not a bool"
 
-        # Draw animation index
-        index_text = small_font.render(
-            f"{current_anim_index + 1}/{len(anim_names)}", True, (150, 150, 150)
-        )
-        screen.blit(index_text, (1200, 680))
+    def test_knight_animations_can_get_frames(self) -> None:
+        """Test that animations can return frames at different times."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
 
-        if paused:
-            pause_text = font.render("PAUSED", True, (255, 255, 0))
-            pause_rect = pause_text.get_rect(center=(640, 50))
-            screen.blit(pause_text, pause_rect)
+        for anim_name, animation in animations.items():
+            # Test getting frame at time 0
+            frame_0 = animation.get_frame(0.0)
+            assert isinstance(frame_0, pygame.Surface), f"{anim_name} frame at time 0 failed"
 
-        pygame.display.flip()
+            # Test getting frame at middle time
+            mid_time = animation.frame_duration * len(animation.frames) / 2
+            frame_mid = animation.get_frame(mid_time)
+            assert isinstance(
+                frame_mid, pygame.Surface
+            ), f"{anim_name} frame at mid time failed"
 
-    pygame.quit()
+    def test_knight_animations_caching(self) -> None:
+        """Test that knight animations are cached properly."""
+        resource_manager = ResourceManager()
+
+        # Load animations first time
+        animations_1 = resource_manager.get_knight_animations()
+
+        # Load animations second time (should be cached)
+        animations_2 = resource_manager.get_knight_animations()
+
+        # Should be the exact same dictionary object
+        assert animations_1 is animations_2, "Animations were not cached"
+
+    def test_knight_animation_frame_dimensions(self) -> None:
+        """Test that animation frames have reasonable dimensions."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
+
+        for anim_name, animation in animations.items():
+            for i, frame in enumerate(animation.frames):
+                width = frame.get_width()
+                height = frame.get_height()
+                assert width > 0, f"{anim_name} frame {i} has zero width"
+                assert height > 0, f"{anim_name} frame {i} has zero height"
+                assert width <= 1000, f"{anim_name} frame {i} width too large"
+                assert height <= 1000, f"{anim_name} frame {i} height too large"
+
+    def test_knight_idle_animation_properties(self) -> None:
+        """Test specific properties of the idle animation."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
+
+        if "idle" in animations:
+            idle_anim = animations["idle"]
+            assert len(idle_anim.frames) == 10, "idle should have 10 frames"
+            assert idle_anim.loop is True, "idle should loop"
+            assert idle_anim.frame_duration == pytest.approx(
+                0.1
+            ), "idle frame duration should be 0.1s"
 
 
-if __name__ == "__main__":
-    try:
-        test_knight_sprites()
-    except Exception as e:
-        logging.error(f"Test failed: {e}", exc_info=True)
-        sys.exit(1)
+class TestKnightAnimationPlayback:
+    """Tests for knight animation playback behavior."""
+
+    def setup_method(self) -> None:
+        """Reset ResourceManager before each test."""
+        ResourceManager.reset_instance()
+
+    def teardown_method(self) -> None:
+        """Clean up after each test."""
+        ResourceManager.reset_instance()
+
+    def test_animation_returns_first_frame_at_time_zero(self) -> None:
+        """Test that animations return the first frame at time 0."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
+
+        for anim_name, animation in animations.items():
+            frame_0 = animation.get_frame(0.0)
+            expected_frame = animation.frames[0]
+            assert frame_0 is expected_frame, f"{anim_name} doesn't return first frame at t=0"
+
+    def test_looping_animation_wraps_correctly(self) -> None:
+        """Test that looping animations wrap around correctly."""
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
+
+        for anim_name, animation in animations.items():
+            if animation.loop:
+                total_duration = len(animation.frames) * animation.frame_duration
+                # Time beyond the animation duration should wrap
+                wrapped_frame = animation.get_frame(total_duration + 0.05)
+                early_frame = animation.get_frame(0.05)
+                # Should be the same frame after wrapping
+                assert (
+                    wrapped_frame is early_frame
+                ), f"{anim_name} doesn't wrap correctly"

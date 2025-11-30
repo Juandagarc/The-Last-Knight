@@ -83,12 +83,13 @@ class TestResourceManagerImageLoading:
         """Test that images are cached after loading."""
         # Create a temporary test image
         test_image_path = str(tmp_path / "test_image.png")
-        test_surface = pygame.Surface((64, 64))
+        test_surface = pygame.Surface((64, 64), pygame.SRCALPHA)
+        test_surface.fill((255, 0, 0, 255))
         pygame.image.save(test_surface, test_image_path)
 
         rm = ResourceManager()
-        surface1 = rm.load_image(test_image_path)
-        surface2 = rm.load_image(test_image_path)
+        surface1 = rm.load_image(test_image_path, convert_alpha=False)
+        surface2 = rm.load_image(test_image_path, convert_alpha=False)
 
         assert surface1 is surface2
         assert test_image_path in rm._image_cache
@@ -174,12 +175,13 @@ class TestResourceManagerCacheClear:
 
         # Create a temporary test image
         test_image_path = str(tmp_path / "test_clear.png")
-        test_surface = pygame.Surface((64, 64))
+        test_surface = pygame.Surface((64, 64), pygame.SRCALPHA)
+        test_surface.fill((0, 255, 0, 255))
         pygame.image.save(test_surface, test_image_path)
 
         # Populate caches
         rm.load_font(None, 24)
-        rm.load_image(test_image_path)
+        rm.load_image(test_image_path, convert_alpha=False)
 
         # Verify caches have content
         assert len(rm._font_cache) > 0

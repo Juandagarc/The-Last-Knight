@@ -8,6 +8,10 @@ import pygame
 def pygame_init():
     """Initialize pygame for all tests."""
     pygame.init()
+    # Initialize display module for font and image operations
+    pygame.display.set_mode((1, 1), pygame.HIDDEN)
+    # Initialize font module explicitly
+    pygame.font.init()
     yield
     pygame.quit()
 
