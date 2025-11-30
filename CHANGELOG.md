@@ -1,10 +1,20 @@
 # CHANGELOG
 
 
+## v0.7.0 (2025-11-30)
+
+
 ## v0.6.0 (2025-11-30)
 
 
 ## v0.5.0 (2025-11-30)
+
+### Chores
+
+- Initial plan for KNIGHT-005
+  ([`08b18b7`](https://github.com/Juandagarc/The-Last-Knight/commit/08b18b7574f6f58a7d059a81b07d57804c81b87e))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
 
 ### Documentation
 
@@ -56,6 +66,11 @@ Add two fonts for game interface: - Press Start 2P: Classic 8-bit pixel font for
   CodeMan38) - Cinzel: Medieval-themed serif font for titles (OFL by Natanael Gama)
 
 Both fonts from Google Fonts with Open Font License.
+
+- **fsm**: Implement Player FSM with movement states (KNIGHT-005)
+  ([`94b6b39`](https://github.com/Juandagarc/The-Last-Knight/commit/94b6b394e49bcac125cde7703cf029f909ecaa9b))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
 
 - **maps**: Create three playable game levels
   ([`4c04abb`](https://github.com/Juandagarc/The-Last-Knight/commit/4c04abbc5d969c2272333aa8aa0135b171654e5d))
