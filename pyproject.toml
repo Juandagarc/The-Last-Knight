@@ -54,39 +54,13 @@ exclude = [".git", "__pycache__", "venv", ".venv"]
 
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
-version_variables = []
 branch = "main"
 changelog_file = "CHANGELOG.md"
-build_command = "uv sync"
-dist_path = "dist/"
+build_command = "echo 'No build required'"
 upload_to_vcs_release = true
 upload_to_pypi = false
-upload_to_repository = false
 commit_message = "chore(release): {version} [skip ci]"
 tag_format = "v{version}"
-
-[tool.semantic_release.branches.main]
-match = "main"
-prerelease = false
-
-[tool.semantic_release.changelog]
-template_dir = "templates"
-changelog_file = "CHANGELOG.md"
-exclude_commit_patterns = []
-
-[tool.semantic_release.changelog.environment]
-block_start_string = "{%"
-block_end_string = "%}"
-variable_start_string = "{{"
-variable_end_string = "}}"
-comment_start_string = "{#"
-comment_end_string = "#}"
-trim_blocks = false
-lstrip_blocks = false
-newline_sequence = "\n"
-keep_trailing_newline = false
-extensions = []
-autoescape = true
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = [
