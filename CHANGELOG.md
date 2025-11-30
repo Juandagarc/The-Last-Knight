@@ -1,6 +1,27 @@
 # CHANGELOG
 
 
+## v0.2.0 (2025-11-30)
+
+### Bug Fixes
+
+- Update semantic-release installation and remove verbose flag
+  ([`2a50731`](https://github.com/Juandagarc/The-Last-Knight/commit/2a50731d2a44881dc59df6cca3fe7b2cc841dfae))
+
+### Chores
+
+- Add verbose flag to semantic release command
+  ([`331753b`](https://github.com/Juandagarc/The-Last-Knight/commit/331753b35ab22ba5d3cbb3197894f14723c81fce))
+
+- Remove redundant semantic-release installation step and enhance configuration
+  ([`5345b86`](https://github.com/Juandagarc/The-Last-Knight/commit/5345b8638d012f8fea54ce960d2b533f8cefb374))
+
+### Features
+
+- Enhance Docker workflow with build and push steps
+  ([`6495248`](https://github.com/Juandagarc/The-Last-Knight/commit/6495248b3a4aabce02ba55287b75399ea0bff94b))
+
+
 ## v0.1.0 (2025-11-30)
 
 ### Bug Fixes
