@@ -8,7 +8,7 @@ import logging
 
 import pygame
 
-from src.core.settings import GRAVITY, MAX_FALL_SPEED
+from src.core.settings import FPS, FRICTION_STOP_THRESHOLD, GRAVITY, MAX_FALL_SPEED
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ class PhysicsBody:
         """
         if not self.gravity_enabled or self.on_ground:
             return
-        self.velocity.y += self.gravity * dt * 60
+        self.velocity.y += self.gravity * dt * FPS
         self.velocity.y = min(self.velocity.y, self.max_fall_speed)
 
     def apply_friction(self, friction: float, dt: float) -> None:
@@ -70,8 +70,8 @@ class PhysicsBody:
             dt: Delta time in seconds.
         """
         if self.on_ground:
-            self.velocity.x *= 1 - friction * dt * 60
-            if abs(self.velocity.x) < 0.1:
+            self.velocity.x *= 1 - friction * dt * FPS
+            if abs(self.velocity.x) < FRICTION_STOP_THRESHOLD:
                 self.velocity.x = 0
 
     def reset_collision_flags(self) -> None:

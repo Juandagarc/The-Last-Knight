@@ -10,6 +10,8 @@ from typing import List, Tuple, Optional, TYPE_CHECKING
 
 import pygame
 
+from src.core.settings import RAYCAST_STEP_SIZE
+
 if TYPE_CHECKING:
     from src.systems.physics import PhysicsBody
 
@@ -158,7 +160,7 @@ class CollisionManager:
         if direction.length() == 0:
             return None
 
-        step = direction.normalize() * 4
+        step = direction.normalize() * RAYCAST_STEP_SIZE
         current = pygame.math.Vector2(start)
         distance = 0.0
 
@@ -168,6 +170,6 @@ class CollisionManager:
                 if point.colliderect(tile):
                     return current, tile
             current += step
-            distance += 4
+            distance += RAYCAST_STEP_SIZE
 
         return None
