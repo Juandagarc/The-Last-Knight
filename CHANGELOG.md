@@ -1,6 +1,26 @@
 # CHANGELOG
 
 
+## v0.5.0 (2025-11-30)
+
+### Features
+
+- **systems**: Implement Physics and Collision systems for KNIGHT-004
+  ([`832e88b`](https://github.com/Juandagarc/The-Last-Knight/commit/832e88b66cc9709addf3927d02e605dfd49cfb20))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+### Refactoring
+
+- Replace magic numbers with constants from settings
+  ([`20b243b`](https://github.com/Juandagarc/The-Last-Knight/commit/20b243b91dd0e1b03fa7a9a940c0c2fefc8292f0))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+- **tests**: Remove unused pytest import from test_collision.py
+  ([`672c059`](https://github.com/Juandagarc/The-Last-Knight/commit/672c0590b38e3685ccd1b91555c0169e154c63ca))
+
+
 ## v0.4.0 (2025-11-30)
 
 ### Chores
