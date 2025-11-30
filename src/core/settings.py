@@ -1,0 +1,44 @@
+"""Global game settings and constants."""
+
+# Display
+GAME_TITLE = "The Last Knight Path"
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
+FPS = 60
+
+# Physics
+GRAVITY = 0.8
+MAX_FALL_SPEED = 15.0
+JUMP_FORCE = -16.0
+WALL_SLIDE_SPEED = 2.0
+
+# Player
+PLAYER_SPEED = 5.0
+DASH_SPEED = 15.0
+DASH_DURATION = 0.2
+ATTACK_COMBO_WINDOW = 0.5
+INVULNERABILITY_DURATION = 0.5
+
+# Colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+
+# Debug
+DEBUG_MODE = False
+SHOW_HITBOXES = False
+SHOW_FPS = True
+
+# Audio
+MUSIC_VOLUME = 0.7
+SFX_VOLUME = 0.8
+
+# Paths
+ASSETS_PATH = "assets"
+SPRITES_PATH = f"{ASSETS_PATH}/sprites"
+MAPS_PATH = f"{ASSETS_PATH}/maps"
+AUDIO_PATH = f"{ASSETS_PATH}/audio"
+FONTS_PATH = f"{ASSETS_PATH}/fonts"
+SAVE_PATH = "data/scores.json"
