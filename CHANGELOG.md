@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v0.3.0 (2025-11-30)
+
+### Bug Fixes
+
+- **resource-manager**: Handle FileNotFoundError in load_sound
+  ([`e4eef3d`](https://github.com/Juandagarc/The-Last-Knight/commit/e4eef3d7b1d0ce512fde31132a09148ebe7ceaa1))
+
+Co-authored-by: Juandagarc <136721434+Juandagarc@users.noreply.github.com>
+
+### Chores
+
+- Initial plan for KNIGHT-002
+  ([`5b98ea2`](https://github.com/Juandagarc/The-Last-Knight/commit/5b98ea2f9e244b568c242587af14b809488102e8))
+
+Co-authored-by: Juandagarc <136721434+Juandagarc@users.noreply.github.com>
+
+### Features
+
+- **core**: Implement Game singleton and ResourceManager
+  ([`8e0f398`](https://github.com/Juandagarc/The-Last-Knight/commit/8e0f39864df3f57dcb9f17384493f8bbb31589bc))
+
+Co-authored-by: Juandagarc <136721434+Juandagarc@users.noreply.github.com>
+
+
 ## v0.2.1 (2025-11-30)
 
 
