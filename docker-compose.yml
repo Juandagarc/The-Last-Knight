@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  game:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: the-last-knight-path
+    volumes:
+      - ./data:/app/data
+      - ./assets:/app/assets:ro
+    environment:
+      - DEBUG_MODE=true
+      - SHOW_FPS=true
+      - SHOW_HITBOXES=false
+      - MUSIC_VOLUME=0.7
+      - SFX_VOLUME=0.8
+    # For running with display (Linux with X11)
+    # Uncomment these lines and comment SDL_VIDEODRIVER=dummy in Dockerfile
+    # environment:
+    #   - DISPLAY=${DISPLAY}
+    # volumes:
+    #   - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    # devices:
+    #   - /dev/dri:/dev/dri
+
+  # Development container with all tools
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: knight-dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    environment:
+      - DEBUG_MODE=true
+      - PYTHONUNBUFFERED=1
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+
+  # Test runner
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: knight-test
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - SDL_VIDEODRIVER=dummy
+      - SDL_AUDIODRIVER=dummy
+    command: pytest tests/ -v --cov=src --cov-report=term-missing
