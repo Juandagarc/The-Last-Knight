@@ -1,0 +1,185 @@
+{
+  "frame_height": 80,
+  "animations": {
+    "idle": {
+      "file": "idle.png",
+      "frames": 10,
+      "frame_duration": 0.1,
+      "loop": true
+    },
+    "run": {
+      "file": "run.png",
+      "frames": 10,
+      "frame_duration": 0.08,
+      "loop": true
+    },
+    "jump": {
+      "file": "jump.png",
+      "frames": 3,
+      "frame_duration": 0.1,
+      "loop": false
+    },
+    "fall": {
+      "file": "fall.png",
+      "frames": 3,
+      "frame_duration": 0.1,
+      "loop": true
+    },
+    "jump_fall_inbetween": {
+      "file": "jump_fall_inbetween.png",
+      "frames": 2,
+      "frame_duration": 0.1,
+      "loop": false
+    },
+    "attack": {
+      "file": "attack.png",
+      "frames": 4,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "attack_no_movement": {
+      "file": "attack_no_movement.png",
+      "frames": 4,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "attack2": {
+      "file": "attack2.png",
+      "frames": 6,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "attack2_no_movement": {
+      "file": "attack2_no_movement.png",
+      "frames": 6,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "attack_combo": {
+      "file": "attack_combo.png",
+      "frames": 10,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "attack_combo_no_movement": {
+      "file": "attack_combo_no_movement.png",
+      "frames": 10,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "dash": {
+      "file": "dash.png",
+      "frames": 2,
+      "frame_duration": 0.1,
+      "loop": false
+    },
+    "roll": {
+      "file": "roll.png",
+      "frames": 12,
+      "frame_duration": 0.05,
+      "loop": false
+    },
+    "crouch": {
+      "file": "crouch.png",
+      "frames": 1,
+      "frame_duration": 0.1,
+      "loop": true
+    },
+    "crouch_transition": {
+      "file": "crouch_transition.png",
+      "frames": 1,
+      "frame_duration": 0.1,
+      "loop": false
+    },
+    "crouch_walk": {
+      "file": "crouch_walk.png",
+      "frames": 8,
+      "frame_duration": 0.1,
+      "loop": true
+    },
+    "crouch_attack": {
+      "file": "crouch_attack.png",
+      "frames": 4,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "crouch_all": {
+      "file": "crouch_all.png",
+      "frames": 3,
+      "frame_duration": 0.1,
+      "loop": false
+    },
+    "slide": {
+      "file": "slide.png",
+      "frames": 2,
+      "frame_duration": 0.1,
+      "loop": true
+    },
+    "slide_transition_start": {
+      "file": "slide_transition_start.png",
+      "frames": 1,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "slide_transition_end": {
+      "file": "slide_transition_end.png",
+      "frames": 1,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "slide_all": {
+      "file": "slide_all.png",
+      "frames": 4,
+      "frame_duration": 0.08,
+      "loop": false
+    },
+    "wall_slide": {
+      "file": "wall_slide.png",
+      "frames": 3,
+      "frame_duration": 0.15,
+      "loop": true
+    },
+    "wall_hang": {
+      "file": "wall_hang.png",
+      "frames": 1,
+      "frame_duration": 0.1,
+      "loop": true
+    },
+    "wall_climb": {
+      "file": "wall_climb.png",
+      "frames": 7,
+      "frame_duration": 0.1,
+      "loop": true
+    },
+    "wall_climb_no_movement": {
+      "file": "wall_climb_no_movement.png",
+      "frames": 7,
+      "frame_duration": 0.1,
+      "loop": false
+    },
+    "hit": {
+      "file": "hit.png",
+      "frames": 1,
+      "frame_duration": 0.1,
+      "loop": false
+    },
+    "death": {
+      "file": "death.png",
+      "frames": 10,
+      "frame_duration": 0.1,
+      "loop": false
+    },
+    "death_no_movement": {
+      "file": "death_no_movement.png",
+      "frames": 10,
+      "frame_duration": 0.1,
+      "loop": false
+    },
+    "turn_around": {
+      "file": "turn_around.png",
+      "frames": 3,
+      "frame_duration": 0.08,
+      "loop": false
+    }
+  }
+}
