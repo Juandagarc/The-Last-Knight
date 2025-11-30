@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v0.8.0 (2025-11-30)
+
+### Chores
+
+- Initial plan for KNIGHT-006
+  ([`70c4175`](https://github.com/Juandagarc/The-Last-Knight/commit/70c41750ea5dfeadc7834e6d23408c115826b9bd))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+### Features
+
+- **combat**: Implement combat system with attack state and combos (KNIGHT-006)
+  ([`ca750f7`](https://github.com/Juandagarc/The-Last-Knight/commit/ca750f7361cf5cf19af1cf3b7428ee3fb067df92))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+### Refactoring
+
+- **combat**: Address code review feedback - clean up hitbox method and add constant
+  ([`515697c`](https://github.com/Juandagarc/The-Last-Knight/commit/515697ca5d6126d9e660184b60d4e68815982fb2))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+
 ## v0.7.0 (2025-11-30)
 
 
