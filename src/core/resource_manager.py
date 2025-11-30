@@ -9,6 +9,9 @@ from typing import Dict, Optional
 
 import pygame
 
+from src.systems.animation import Animation
+from src.systems.sprite_loader import SpriteLoader
+
 logger = logging.getLogger(__name__)
 
 
@@ -37,6 +40,7 @@ class ResourceManager:
         self._image_cache: Dict[str, pygame.Surface] = {}
         self._sound_cache: Dict[str, pygame.mixer.Sound] = {}
         self._font_cache: Dict[str, pygame.font.Font] = {}
+        self._animation_cache: Dict[str, Dict[str, Animation]] = {}
         self._initialized: bool = True
 
         logger.info("ResourceManager initialized")
@@ -122,7 +126,46 @@ class ResourceManager:
         self._image_cache.clear()
         self._sound_cache.clear()
         self._font_cache.clear()
+        self._animation_cache.clear()
         logger.info("Resource cache cleared")
+
+    def load_animations(
+        self, entity_name: str, config_path: str, sprite_dir: str
+    ) -> Dict[str, Animation]:
+        """
+        Load animations for an entity from a JSON config file.
+
+        Args:
+            entity_name: Name of the entity (used for caching)
+            config_path: Path to the JSON configuration file
+            sprite_dir: Directory containing the sprite sheet images
+
+        Returns:
+            Dictionary mapping animation names to Animation objects
+        """
+        if entity_name in self._animation_cache:
+            logger.debug(f"Using cached animations for {entity_name}")
+            return self._animation_cache[entity_name]
+
+        animations = SpriteLoader.load_animations_from_config(config_path, sprite_dir)
+        if animations:
+            self._animation_cache[entity_name] = animations
+            logger.info(f"Loaded and cached {len(animations)} animations for {entity_name}")
+
+        return animations
+
+    def get_knight_animations(self) -> Dict[str, Animation]:
+        """
+        Load and return knight animations.
+
+        Returns:
+            Dictionary of knight animations
+        """
+        return self.load_animations(
+            entity_name="knight",
+            config_path="assets/sprites/knight/knight_sprites.json",
+            sprite_dir="assets/sprites/knight",
+        )
 
     @classmethod
     def reset_instance(cls) -> None:
