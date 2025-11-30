@@ -89,7 +89,7 @@ class ResourceManager:
             self._sound_cache[path] = sound
             logger.debug("Loaded sound: %s", path)
             return sound
-        except pygame.error as e:
+        except (pygame.error, FileNotFoundError) as e:
             logger.error("Failed to load sound %s: %s", path, e)
             return None
 
