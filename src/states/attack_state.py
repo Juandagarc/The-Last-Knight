@@ -112,13 +112,8 @@ class AttackState(State):
         self.current_hitbox = None
         logger.debug("Exiting attack state")
 
-    def _create_attack_hitbox(self) -> pygame.Rect:
-        """
-        Create attack hitbox based on facing direction.
-
-        Returns:
-            The created attack hitbox rectangle.
-        """
+    def _create_attack_hitbox(self) -> None:
+        """Create and store attack hitbox based on facing direction."""
         hitbox_width = 40
         hitbox_height = 48
 
@@ -130,7 +125,6 @@ class AttackState(State):
         y = self.player.hitbox.centery - hitbox_height // 2
 
         self.current_hitbox = pygame.Rect(x, y, hitbox_width, hitbox_height)
-        return self.current_hitbox
 
     def get_attack_hitbox(self) -> Optional[pygame.Rect]:
         """

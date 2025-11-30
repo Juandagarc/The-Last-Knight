@@ -13,6 +13,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+# Default damage value for enemies without get_damage method
+DEFAULT_ENEMY_DAMAGE = 10
+
 
 class CombatManager:
     """
@@ -104,6 +107,8 @@ class CombatManager:
             if hasattr(enemy, "get_attack_hitbox"):
                 hitbox = enemy.get_attack_hitbox()
                 if hitbox and hitbox.colliderect(self.player.hitbox):
-                    damage = enemy.get_damage() if hasattr(enemy, "get_damage") else 10
+                    damage = (
+                        enemy.get_damage() if hasattr(enemy, "get_damage") else DEFAULT_ENEMY_DAMAGE
+                    )
                     self.player.take_damage(damage)
                     logger.debug("Enemy hit player for %d damage", damage)
