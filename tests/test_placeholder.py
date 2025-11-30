@@ -13,4 +13,5 @@ class TestPlaceholder:
     def test_python_version(self):
         """Verify Python version is 3.10+."""
         import sys
+
         assert sys.version_info >= (3, 10)
