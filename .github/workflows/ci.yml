@@ -22,7 +22,7 @@ jobs:
         run: uv python install 3.11
       
       - name: Install dependencies
-        run: uv sync --dev
+        run: uv sync --extra dev
       
       - name: Run flake8
         run: uv run flake8 src/ --max-line-length=100 --ignore=E501,W503
@@ -45,7 +45,7 @@ jobs:
         run: uv python install 3.11
       
       - name: Install dependencies
-        run: uv sync --dev
+        run: uv sync --extra dev
       
       - name: Run mypy
         run: uv run mypy src/ --ignore-missing-imports
@@ -74,7 +74,7 @@ jobs:
           sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
       
       - name: Install Python dependencies
-        run: uv sync --dev
+        run: uv sync --extra dev
       
       - name: Run tests with coverage
         run: |
@@ -112,7 +112,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          uv sync --dev
+          uv sync --extra dev
           uv add pyinstaller
       
       - name: Build executable
