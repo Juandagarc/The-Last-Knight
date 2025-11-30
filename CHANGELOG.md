@@ -1,9 +1,15 @@
 # CHANGELOG
 
 
+## v0.2.1 (2025-11-30)
+
+
 ## v0.2.0 (2025-11-30)
 
 ### Bug Fixes
+
+- Update semantic-release configuration to simplify build process
+  ([`a5e8d72`](https://github.com/Juandagarc/The-Last-Knight/commit/a5e8d72f7d65bae6c8354b36750414f045a6bf7e))
 
 - Update semantic-release installation and remove verbose flag
   ([`2a50731`](https://github.com/Juandagarc/The-Last-Knight/commit/2a50731d2a44881dc59df6cca3fe7b2cc841dfae))
