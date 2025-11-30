@@ -1,6 +1,117 @@
 # CHANGELOG
 
 
+## v0.6.0 (2025-11-30)
+
+
+## v0.5.0 (2025-11-30)
+
+### Documentation
+
+- Add asset credits and verification tools
+  ([`2969555`](https://github.com/Juandagarc/The-Last-Knight/commit/296955574d94cf32153253356fcb9381e830bc0f))
+
+Add documentation and tooling for asset management: - CREDITS.md: Complete attribution for all
+  downloaded assets with sources, licenses, authors, and file locations - MAPS_CREATED.md: Detailed
+  map documentation with layouts, features, and usage instructions for each level -
+  scripts/verify_assets.py: Python script to verify asset completeness and generate inventory
+  reports
+
+All assets properly credited with CC0, CC-BY, OFL, and other licenses.
+
+- **assets**: Add documentation for asset organization and maps
+  ([`bf403b4`](https://github.com/Juandagarc/The-Last-Knight/commit/bf403b4e0d9ab7787de68b26943c1b41c26bff74))
+
+Add comprehensive documentation: - assets/README.md: Asset directory structure, file naming
+  conventions, quick start guide, and verification instructions - assets/maps/README.md: Map
+  structure, layer details, Tiled usage guide, coordinate systems, and loading instructions for
+  pytmx
+
+Includes examples for loading assets in Pygame and editing maps in Tiled.
+
+### Features
+
+- **audio**: Add background music tracks
+  ([`c1206b3`](https://github.com/Juandagarc/The-Last-Knight/commit/c1206b314cc87d744ac84da82cd32d2d83d6e53a))
+
+Add three CC0 licensed music tracks from FreePD.com: - menu.mp3: Dancing at the Inn by Kevin MacLeod
+  - gameplay.mp3: Celebration by Alexander Nakarada - boss.mp3: Epic Boss Battle by Rafael Krux
+
+All tracks are public domain and suitable for medieval fantasy platformer.
+
+- **audio**: Add sound effects for gameplay
+  ([`e76c53b`](https://github.com/Juandagarc/The-Last-Knight/commit/e76c53b3306417548a52463aa979e9d0d5079ebb))
+
+Add comprehensive SFX library including: - Player movement sounds (jump, land, footstep, wall
+  climb/slide) - Combat sounds (sword slash, sword hit, player/enemy hurt) - UI sounds (menu
+  select/confirm, clicks, switches) - 51 additional UI variations from Kenney UI SFX pack
+
+Sources: - 12 Player Movement SFX (CC-BY 4.0) from OpenGameArt - 51 UI Sound Effects (CC0) by Kenney
+  from OpenGameArt
+
+- **fonts**: Add game fonts for UI and titles
+  ([`fe37856`](https://github.com/Juandagarc/The-Last-Knight/commit/fe3785630e3290bccb2872cd32beeb8bdf5c3c08))
+
+Add two fonts for game interface: - Press Start 2P: Classic 8-bit pixel font for UI (OFL by
+  CodeMan38) - Cinzel: Medieval-themed serif font for titles (OFL by Natanael Gama)
+
+Both fonts from Google Fonts with Open Font License.
+
+- **maps**: Create three playable game levels
+  ([`4c04abb`](https://github.com/Juandagarc/The-Last-Knight/commit/4c04abbc5d969c2272333aa8aa0135b171654e5d))
+
+Add Tiled map files (.tmx) for platformer gameplay: - level_01_tutorial.tmx: 40x23 tutorial level
+  with basic platforming (1280x736px) - level_02_dungeon.tmx: 50x30 advanced dungeon level with
+  challenges (1600x960px) - level_03_boss_arena.tmx: 30x20 enclosed boss battle arena (960x640px)
+
+All maps use 32x32 tile size with castle_tileset.png and include 4 layers: Background, Platforms,
+  Decorations, and Collision.
+
+- **sprites**: Add boss character sprites
+  ([`3d1e32c`](https://github.com/Juandagarc/The-Last-Knight/commit/3d1e32cf7f0769331596135cc90c5bd744ae0c4f))
+
+Add LPC Medieval fantasy character sprites for boss encounters. Includes modular skeleton/knight
+  sprites with full animation sets, armor variations, and weapon options. Can be scaled 2x for boss
+  size.
+
+Source: wulax on OpenGameArt.org
+
+License: CC-BY-SA 3.0 and GPL 3.0
+
+- **sprites**: Add enemy character sprites
+  ([`d94c074`](https://github.com/Juandagarc/The-Last-Knight/commit/d94c074fdd0e2de1d6727ba2c4c17aac358af1fe))
+
+Add 4 enemy types with animations: - Skeleton: 32x32 pixel art with idle, attack, walk (CC0 by tbbk)
+  - Goblin: 32x32 animated with idle, run, attack, death (CC0 by thekingphoenix) - Bat: 32x32 flying
+  enemy with 5 flight frames (CC0 by MoikMellah) - Slime: Animated with idle, movement, attack, hurt
+  (CC0 by rvros)
+
+All sprites sourced from OpenGameArt.org with CC0 public domain license.
+
+- **systems**: Implement Physics and Collision systems for KNIGHT-004
+  ([`832e88b`](https://github.com/Juandagarc/The-Last-Knight/commit/832e88b66cc9709addf3927d02e605dfd49cfb20))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+- **tiles**: Add dungeon and castle tilesets
+  ([`ae76fe8`](https://github.com/Juandagarc/The-Last-Knight/commit/ae76fe8f6c09d788aebbdaa0ada368605dcb49e8))
+
+Add 32x32 tilesets for platformer level design: - Dungeon tileset with walls, corners, and floor
+  tiles (CC0 by Enyph Games) - Castle platformer tileset with 20 decoration objects (CC0 by Vicplay)
+
+Both tilesets sourced from OpenGameArt.org with public domain licenses.
+
+### Refactoring
+
+- Replace magic numbers with constants from settings
+  ([`20b243b`](https://github.com/Juandagarc/The-Last-Knight/commit/20b243b91dd0e1b03fa7a9a940c0c2fefc8292f0))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+- **tests**: Remove unused pytest import from test_collision.py
+  ([`672c059`](https://github.com/Juandagarc/The-Last-Knight/commit/672c0590b38e3685ccd1b91555c0169e154c63ca))
+
+
 ## v0.4.0 (2025-11-30)
 
 ### Chores
