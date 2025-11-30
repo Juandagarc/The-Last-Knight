@@ -1,6 +1,38 @@
 # CHANGELOG
 
 
+## v0.4.0 (2025-11-30)
+
+### Chores
+
+- Initial plan for KNIGHT-003
+  ([`d7152d9`](https://github.com/Juandagarc/The-Last-Knight/commit/d7152d9d5155b195b807e187384b51e533ba783f))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+### Features
+
+- **assets**: Add knight sprite assets and animations configuration
+  ([`2efc21a`](https://github.com/Juandagarc/The-Last-Knight/commit/2efc21a946723164ccaf3584b8b9b3c70e465761))
+
+- **entities**: Add knight sprite implementation with 30 animations and resource management
+  ([`eb025a5`](https://github.com/Juandagarc/The-Last-Knight/commit/eb025a587b532317729995345c1179c2d267bf55))
+
+- **entities**: Enhance ResourceManager with animation caching and loading methods
+  ([`676ce02`](https://github.com/Juandagarc/The-Last-Knight/commit/676ce02d86f3f6a3a6370ef8bd409d9815cdcd9b))
+
+- **entities**: Implement Entity base class and Animation system (KNIGHT-003)
+  ([`9dadcf3`](https://github.com/Juandagarc/The-Last-Knight/commit/9dadcf33ea646c1c804981c39b49001376332d7a))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+- **tests**: Add comprehensive test suite for knight sprite animations and resource management
+  ([`ff26cc9`](https://github.com/Juandagarc/The-Last-Knight/commit/ff26cc9ef44caddf0fdde5f390a888439fb9f670))
+
+- **tests**: Add test script for knight sprite loading and animation display
+  ([`ddc1637`](https://github.com/Juandagarc/The-Last-Knight/commit/ddc1637d46cf79e4fb5eea7a23095376b86d1046))
+
+
 ## v0.3.0 (2025-11-30)
 
 ### Bug Fixes
