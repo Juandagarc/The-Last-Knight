@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v0.10.0 (2025-12-02)
+
+### Bug Fixes
+
+- **ai**: Fix black formatting and mypy type errors in ai.py
+  ([`904a145`](https://github.com/Juandagarc/The-Last-Knight/commit/904a145545909707e3e72d1f51da2be13a8bf19b))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+### Features
+
+- **enemies**: Implement Enemy AI & Patrol with intelligent utility-based AI (KNIGHT-007)
+  ([`87b33d8`](https://github.com/Juandagarc/The-Last-Knight/commit/87b33d8aeccbfd2e88f9d153fbf0f1041fdbfb95))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+### Refactoring
+
+- **ai**: Address code review feedback - replace magic numbers with constants
+  ([`9282aae`](https://github.com/Juandagarc/The-Last-Knight/commit/9282aae819ed482607d487a86119e5a3e3ac7f1b))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+
 ## v0.9.0 (2025-12-02)
 
 ### Features
