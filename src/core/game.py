@@ -55,6 +55,11 @@ class Game:
         self._current_screen: Any = None
         self._initialized: bool = True
 
+        # Initialize with IntroScreen
+        from src.ui.screens.intro_screen import IntroScreen
+
+        self._current_screen = IntroScreen(self)
+
         logger.info("Game initialized")
 
     def run(self) -> None:
@@ -75,9 +80,14 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                # ESC key quits by default
+                self.running = False
+
+            # Delegate all events to current screen if it has handle_event method
+            # Screens can override ESC behavior by changing screens or setting running
+            if self._current_screen and hasattr(self._current_screen, "handle_event"):
+                self._current_screen.handle_event(event)
 
     def _update(self) -> None:
         """Update game state."""
