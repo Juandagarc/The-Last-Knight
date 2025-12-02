@@ -205,6 +205,13 @@ class Boss(Entity):
         # Update phase based on health
         self._update_phase()
 
+        # Update facing direction based on target
+        if self.target:
+            if self.target.pos.x > self.pos.x:
+                self.facing_right = True
+            elif self.target.pos.x < self.pos.x:
+                self.facing_right = False
+
         # Update attack cooldown
         if self.attack_cooldown > 0:
             self.attack_cooldown -= dt

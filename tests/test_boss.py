@@ -625,3 +625,21 @@ class TestBossIntegration:
 
         # Gravity should affect velocity
         assert boss.velocity.y >= initial_y_velocity
+
+    def test_facing_right_updates_with_target(self) -> None:
+        """Test boss faces toward target."""
+        boss = Boss((100, 0))
+        target = MockEntity((200, 0))  # Target to the right
+        boss.set_target(target)
+
+        boss.update(1 / 60)
+
+        # Boss should face right toward target
+        assert boss.facing_right is True
+
+        # Move target to left
+        target.pos.x = 0
+        boss.update(1 / 60)
+
+        # Boss should face left toward target
+        assert boss.facing_right is False
