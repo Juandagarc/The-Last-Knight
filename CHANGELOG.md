@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.9.0 (2025-12-02)
+
+### Features
+
+- Implement UI screens and HUD system (KNIGHT-010)
+  ([`961421a`](https://github.com/Juandagarc/The-Last-Knight/commit/961421af28b743e85cb547764c7f546ab1613126))
+
+Co-authored-by: Juandagarc <136721434+Juandagarc@users.noreply.github.com>
+
+
 ## v0.8.0 (2025-11-30)
 
 ### Chores
