@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.11.0 (2025-12-03)
+
+### Features
+
+- **boss**: Implement Boss entity with 3-phase attack system (KNIGHT-008)
+  ([`42f600f`](https://github.com/Juandagarc/The-Last-Knight/commit/42f600feb6bae4ce180a874a067732a9d7cad919))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+### Refactoring
+
+- **boss**: Address code review feedback - add facing direction updates
+  ([`295093b`](https://github.com/Juandagarc/The-Last-Knight/commit/295093b9d49213acf20b942835422fd86376b57c))
+
+Co-authored-by: adriancho91s <72105546+adriancho91s@users.noreply.github.com>
+
+
 ## v0.10.0 (2025-12-02)
 
 ### Bug Fixes
