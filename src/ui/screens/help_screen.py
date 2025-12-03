@@ -140,4 +140,6 @@ class HelpScreen(BaseScreen):
                 self._on_back_clicked()
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
-            self.back_button.handle_click(mouse_pos)
+            if self.back_button.handle_click(mouse_pos):
+                # Play click sound
+                self.game.audio_manager.play_sfx("menu_confirm")

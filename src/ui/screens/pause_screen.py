@@ -154,4 +154,6 @@ class PauseScreen(BaseScreen):
             mouse_pos = pygame.mouse.get_pos()
             for button in self.buttons:
                 if button.handle_click(mouse_pos):
+                    # Play click sound
+                    self.game.audio_manager.play_sfx("menu_confirm")
                     break
