@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Optional
 
 from src.core.settings import DASH_DURATION, DASH_SPEED, INVULNERABILITY_DURATION
 from src.states.state import State
+from src.systems.audio import AudioManager
 
 if TYPE_CHECKING:
     from src.entities.player import Player
@@ -58,6 +59,9 @@ class DashState(State):
 
         # Disable gravity during dash
         self.player.physics.gravity_enabled = False
+
+        # Play dash sound
+        AudioManager().play_sfx("dash")
 
         self.player.animation.play("dash")
         logger.debug("Entered dash state, direction: %d", self._dash_direction)

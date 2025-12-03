@@ -31,6 +31,7 @@ from src.systems.ai import (
     SmartChaseBehavior,
 )
 from src.systems.animation import Animation, AnimationController, create_placeholder_frames
+from src.systems.audio import AudioManager
 from src.systems.physics import PhysicsBody
 
 logger = logging.getLogger(__name__)
@@ -198,6 +199,9 @@ class Enemy(Entity):
         self.health -= amount
         logger.debug("Enemy took %d damage, health: %d", amount, self.health)
 
+        # Play hit sound
+        AudioManager().play_sfx("61_Hit_03")
+
         if self.health <= 0:
             self.health = 0
             self.change_behavior("death")
@@ -205,6 +209,8 @@ class Enemy(Entity):
             if isinstance(death_behavior, DeathBehavior):
                 death_behavior.start_death()
         else:
+            # Play hurt sound
+            AudioManager().play_sfx("enemy_hurt")
             # Set invulnerability and transition to hurt state
             self.set_invulnerable(INVULNERABILITY_DURATION * 0.5)
             self.change_behavior("hurt")
@@ -452,6 +458,9 @@ class SmartEnemy(Entity):
         self.health -= amount
         logger.debug("SmartEnemy took %d damage, health: %d", amount, self.health)
 
+        # Play hit sound
+        AudioManager().play_sfx("61_Hit_03")
+
         if self.health <= 0:
             self.health = 0
             self.ai_controller.set_behavior("death")
@@ -459,6 +468,8 @@ class SmartEnemy(Entity):
             if isinstance(behavior, DeathBehavior):
                 behavior.start_death()
         else:
+            # Play hurt sound
+            AudioManager().play_sfx("enemy_hurt")
             # Set invulnerability and transition to hurt state
             self.set_invulnerable(INVULNERABILITY_DURATION * 0.5)
             self.ai_controller.set_behavior("hurt")

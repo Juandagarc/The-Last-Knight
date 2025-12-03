@@ -40,6 +40,9 @@ class MenuScreen(BaseScreen):
         """
         super().__init__(game)
 
+        # Start menu music
+        self.game.audio_manager.play_music("menu", loop=True)
+
         # Load title font
         resource_manager = ResourceManager()
         self.title_font = resource_manager.load_font("assets/fonts/Cinzel.ttf", 64)
@@ -152,4 +155,6 @@ class MenuScreen(BaseScreen):
             mouse_pos = pygame.mouse.get_pos()
             for button in self.buttons:
                 if button.handle_click(mouse_pos):
+                    # Play click sound
+                    self.game.audio_manager.play_sfx("menu_confirm")
                     break
