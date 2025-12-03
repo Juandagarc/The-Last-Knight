@@ -5,12 +5,11 @@ Displays the game world and handles gameplay input.
 """
 
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import pygame
 
-from src.core.resource_manager import ResourceManager
-from src.core.settings import SCREEN_WIDTH, SCREEN_HEIGHT, WHITE
+from src.core.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from src.ui.screens.base_screen import BaseScreen
 from src.ui.hud import HUD
 from src.entities.player import Player
@@ -77,7 +76,9 @@ class GameScreen(BaseScreen):
         self.game_time = 0.0
         self.score = 0
 
-        logger.info("GameScreen initialized with level %s", self.level_manager.get_current_level_id())
+        logger.info(
+            "GameScreen initialized with level %s", self.level_manager.get_current_level_id()
+        )
 
     def update(self, dt: float) -> None:
         """
@@ -133,8 +134,10 @@ class GameScreen(BaseScreen):
 
         # Render player with camera offset
         player_screen_pos = self.player.pos - self.camera_offset
-        self.player.image = self.player.animation.get_current_frame()
-        surface.blit(self.player.image, player_screen_pos)
+        current_frame = self.player.animation.get_current_frame()
+        if current_frame:
+            self.player.image = current_frame
+            surface.blit(self.player.image, player_screen_pos)
 
         # Render HUD on top
         player_data = {
