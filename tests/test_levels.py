@@ -7,6 +7,9 @@ from src.levels.tile_map import TileMap
 from src.levels.level_manager import LevelManager
 from src.systems.camera import Camera
 
+# Test constants
+INVALID_LEVEL_ID = 999
+
 
 class TestTileMap:
     """Tests for TileMap class."""
@@ -120,7 +123,7 @@ class TestLevelManager:
         """Test loading invalid level ID returns False."""
         manager = LevelManager()
 
-        success = manager.load_level(999)
+        success = manager.load_level(INVALID_LEVEL_ID)
 
         assert success is False
         assert manager.current_level is None
@@ -341,7 +344,7 @@ class TestCamera:
         camera.update(pygame.math.Vector2(0, 0), 1 / 60)
 
         # Get offset should include shake
-        offset = camera.get_offset()
+        camera.get_offset()
         # Shake offset should be within intensity bounds
         # Note: Due to randomness, we can't test exact values
         # but we can verify shake was applied

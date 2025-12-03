@@ -125,10 +125,9 @@ class TileMap:
             if isinstance(layer, pytmx.TiledObjectGroup):
                 for obj in layer:
                     # Check if object name or type matches
-                    if (
-                        obj.name.lower() == spawn_type.lower()
-                        or obj.type.lower() == spawn_type.lower()
-                    ):
+                    obj_name = getattr(obj, "name", "").lower() if hasattr(obj, "name") else ""
+                    obj_type = getattr(obj, "type", "").lower() if hasattr(obj, "type") else ""
+                    if obj_name == spawn_type.lower() or obj_type == spawn_type.lower():
                         logger.debug(
                             "Found spawn point '%s' at (%f, %f)",
                             spawn_type,
