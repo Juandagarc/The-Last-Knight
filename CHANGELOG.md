@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.12.0 (2025-12-03)
+
+### Features
+
+- **levels**: Implement level loading and camera system (KNIGHT-009)
+  ([`451ca37`](https://github.com/Juandagarc/The-Last-Knight/commit/451ca373ee286975966530086ab098c233b49afe))
+
+Co-authored-by: Juandagarc <136721434+Juandagarc@users.noreply.github.com>
+
+### Refactoring
+
+- **levels**: Address code review feedback - add attribute checks and extract magic number
+  ([`a9ed8cf`](https://github.com/Juandagarc/The-Last-Knight/commit/a9ed8cff0dbc1d5296e701c891082bf58a9f6b61))
+
+Co-authored-by: Juandagarc <136721434+Juandagarc@users.noreply.github.com>
+
+
 ## v0.11.0 (2025-12-03)
 
 ### Features
