@@ -86,9 +86,18 @@ class MenuScreen(BaseScreen):
     def _on_play_clicked(self) -> None:
         """Handle Play button click."""
         logger.info("Play button clicked")
-        from src.ui.screens.game_screen import GameScreen
+        # Load first level
+        if self.game.level_manager.load_level(1):
+            logger.info("Level 1 loaded successfully")
+            from src.ui.screens.game_screen import GameScreen
 
-        self.game.set_screen(GameScreen(self.game))
+            self.game.set_screen(GameScreen(self.game))
+        else:
+            logger.error("Failed to load level 1")
+            # Still transition to game screen even if level fails to load
+            from src.ui.screens.game_screen import GameScreen
+
+            self.game.set_screen(GameScreen(self.game))
 
     def _on_help_clicked(self) -> None:
         """Handle Help button click."""

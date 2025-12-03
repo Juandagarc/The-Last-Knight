@@ -17,6 +17,7 @@ from src.core.settings import (
     FPS,
     SHOW_FPS,
 )
+from src.levels.level_manager import LevelManager
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,9 @@ class Game:
         self.dt: float = 0.0
         self._current_screen: Any = None
         self._initialized: bool = True
+
+        # Initialize level manager
+        self.level_manager: LevelManager = LevelManager()
 
         # Initialize with IntroScreen
         from src.ui.screens.intro_screen import IntroScreen
