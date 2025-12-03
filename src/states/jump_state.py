@@ -9,6 +9,7 @@ from typing import Optional
 
 from src.core.settings import JUMP_FORCE, PLAYER_SPEED
 from src.states.state import State
+from src.systems.audio import AudioManager
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,8 @@ class JumpState(State):
         self.player.physics.velocity.y = JUMP_FORCE
         self.player.physics.on_ground = False
         self.player.animation.play("jump")
+        # Play jump sound
+        AudioManager().play_sfx("jump")
         logger.debug("Entered jump state")
 
     def update(self, dt: float) -> Optional[str]:

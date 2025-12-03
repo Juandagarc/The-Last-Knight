@@ -9,6 +9,7 @@ from typing import Optional
 
 from src.core.settings import PLAYER_SPEED
 from src.states.state import State
+from src.systems.audio import AudioManager
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +71,8 @@ class FallState(State):
 
         # Check if landed
         if physics.on_ground:
+            # Play landing sound
+            AudioManager().play_sfx("land")
             horizontal = input_handler.get_horizontal_axis()
             if horizontal != 0:
                 return "run"

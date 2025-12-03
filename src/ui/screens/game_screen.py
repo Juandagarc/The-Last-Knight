@@ -53,6 +53,9 @@ class GameScreen(BaseScreen):
         """
         super().__init__(game)
 
+        # Start gameplay music
+        self.game.audio_manager.play_music("gameplay", loop=True)
+
         # Initialize HUD
         self.hud = HUD()
 
