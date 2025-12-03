@@ -10,6 +10,7 @@ from typing import Any, Dict, TYPE_CHECKING, Optional
 import pygame
 
 from src.states.state import State
+from src.systems.audio import AudioManager
 
 if TYPE_CHECKING:
     from src.entities.player import Player
@@ -66,6 +67,10 @@ class AttackState(State):
         attack = self.ATTACKS[self.attack_number]
         self.player.animation.play(attack["animation"], force_restart=True)
         self.player.physics.velocity.x *= 0.3
+
+        # Play attack sound
+        AudioManager().play_sfx("56_Attack_03")
+
         logger.debug(
             "Entered attack state - attack %d, damage %d",
             self.attack_number,

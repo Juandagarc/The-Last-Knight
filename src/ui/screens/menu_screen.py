@@ -41,8 +41,7 @@ class MenuScreen(BaseScreen):
         super().__init__(game)
 
         # Start menu music
-        if hasattr(game, "audio"):
-            game.audio.play_music("menu")
+        self.game.audio_manager.play_music("menu", loop=True)
 
         # Load title font
         resource_manager = ResourceManager()
@@ -155,5 +154,8 @@ class MenuScreen(BaseScreen):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
             for button in self.buttons:
-                if button.handle_click(mouse_pos):
+                if button.rect.collidepoint(mouse_pos):
+                    # Play click sound BEFORE executing callback
+                    self.game.audio_manager.play_sfx("menu_confirm")
+                    button.handle_click(mouse_pos)
                     break

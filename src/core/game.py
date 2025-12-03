@@ -17,6 +17,7 @@ from src.core.settings import (
     FPS,
     SHOW_FPS,
 )
+from src.systems.audio import AudioManager
 
 logger = logging.getLogger(__name__)
 
@@ -55,10 +56,8 @@ class Game:
         self._current_screen: Any = None
         self._initialized: bool = True
 
-        # Initialize audio system
-        from src.systems.audio_manager import AudioManager
-
-        self.audio = AudioManager()
+        # Initialize audio manager
+        self.audio_manager: AudioManager = AudioManager()
 
         # Initialize with IntroScreen
         from src.ui.screens.intro_screen import IntroScreen
@@ -119,8 +118,8 @@ class Game:
 
     def _cleanup(self) -> None:
         """Clean up resources."""
-        if hasattr(self, "audio"):
-            self.audio.cleanup()
+        # Stop any playing audio
+        self.audio_manager.stop_music()
         pygame.quit()
         logger.info("Game closed")
 
