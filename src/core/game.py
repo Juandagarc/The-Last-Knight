@@ -55,6 +55,11 @@ class Game:
         self._current_screen: Any = None
         self._initialized: bool = True
 
+        # Initialize audio system
+        from src.systems.audio_manager import AudioManager
+
+        self.audio = AudioManager()
+
         # Initialize with IntroScreen
         from src.ui.screens.intro_screen import IntroScreen
 
@@ -114,6 +119,8 @@ class Game:
 
     def _cleanup(self) -> None:
         """Clean up resources."""
+        if hasattr(self, "audio"):
+            self.audio.cleanup()
         pygame.quit()
         logger.info("Game closed")
 

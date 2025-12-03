@@ -40,6 +40,10 @@ class MenuScreen(BaseScreen):
         """
         super().__init__(game)
 
+        # Start menu music
+        if hasattr(game, "audio"):
+            game.audio.play_music("menu")
+
         # Load title font
         resource_manager = ResourceManager()
         self.title_font = resource_manager.load_font("assets/fonts/Cinzel.ttf", 64)

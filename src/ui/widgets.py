@@ -94,6 +94,15 @@ class Button:
             True if button was clicked, False otherwise.
         """
         if self.is_hovered(mouse_pos):
+            # Play click sound
+            try:
+                from src.systems.audio_manager import AudioManager
+
+                audio = AudioManager()
+                audio.play_sfx("click1")
+            except Exception:
+                pass  # Silently fail if audio system not available
+
             logger.info("Button clicked: %s", self.text)
             self.callback()
             return True

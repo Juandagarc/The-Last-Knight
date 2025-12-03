@@ -44,6 +44,10 @@ class PauseScreen(BaseScreen):
         super().__init__(game)
         self.game_screen = game_screen
 
+        # Pause music when entering pause screen
+        if hasattr(game, "audio"):
+            game.audio.pause_music()
+
         # Load fonts
         resource_manager = ResourceManager()
         self.title_font = resource_manager.load_font("assets/fonts/PressStart2P-Regular.ttf", 48)
@@ -88,11 +92,17 @@ class PauseScreen(BaseScreen):
     def _on_resume_clicked(self) -> None:
         """Handle Resume button click."""
         logger.info("Resume button clicked")
+        # Unpause music when resuming
+        if hasattr(self.game, "audio"):
+            self.game.audio.unpause_music()
         self.game.set_screen(self.game_screen)
 
     def _on_menu_clicked(self) -> None:
         """Handle Main Menu button click."""
         logger.info("Main Menu button clicked from pause")
+        # Stop gameplay music when returning to menu
+        if hasattr(self.game, "audio"):
+            self.game.audio.stop_music(fade_ms=500)
         from src.ui.screens.menu_screen import MenuScreen
 
         self.game.set_screen(MenuScreen(self.game))
@@ -148,6 +158,9 @@ class PauseScreen(BaseScreen):
             # Resume on P key or ESC
             if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
                 logger.info("Resuming game from pause")
+                # Unpause music when resuming via keyboard
+                if hasattr(self.game, "audio"):
+                    self.game.audio.unpause_music()
                 self.game.running = True  # Prevent ESC from quitting
                 self.game.set_screen(self.game_screen)
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:

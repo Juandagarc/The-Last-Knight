@@ -2,6 +2,10 @@
 Main gameplay screen.
 
 Displays the game world and handles gameplay input.
+
+Note: This screen currently spawns enemies directly from level data.
+For advanced spawning features (waves, respawning, dynamic spawns),
+use the EntitySpawner class from src.levels.spawner.
 """
 
 import logging
@@ -91,6 +95,10 @@ class GameScreen(BaseScreen):
         self.game_time = 0.0
         self.score = 0
 
+        # Start gameplay music
+        if hasattr(game, "audio"):
+            game.audio.play_music("gameplay")
+
         logger.info(
             "GameScreen initialized with level %s, %d enemies",
             self.level_manager.get_current_level_id(),
@@ -119,9 +127,10 @@ class GameScreen(BaseScreen):
             self.player.velocity,
             self.player.physics,
         )
-        # Sync position with hitbox
+        # Sync position and rect with hitbox
         self.player.pos.x = self.player.hitbox.x
         self.player.pos.y = self.player.hitbox.y
+        self.player.rect.topleft = (int(self.player.pos.x), int(self.player.pos.y))
 
         # Update enemies
         for enemy in self.enemies:
@@ -132,9 +141,10 @@ class GameScreen(BaseScreen):
                 enemy.velocity,
                 enemy.physics,
             )
-            # Sync enemy position with hitbox
+            # Sync enemy position and rect with hitbox
             enemy.pos.x = enemy.hitbox.x
             enemy.pos.y = enemy.hitbox.y
+            enemy.rect.topleft = (int(enemy.pos.x), int(enemy.pos.y))
 
         # Update camera to follow player
         self._update_camera()
