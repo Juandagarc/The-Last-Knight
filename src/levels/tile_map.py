@@ -165,6 +165,30 @@ class TileMap:
         """
         return self.get_collision_rects()
 
+    def get_enemy_spawns(self) -> list[tuple[float, float]]:
+        """
+        Get all enemy spawn points from the map.
+
+        Returns:
+            List of (x, y) coordinates for enemy spawns.
+        """
+        spawns = []
+        for layer in self.tmx_data.visible_layers:
+            if isinstance(layer, pytmx.TiledObjectGroup):
+                for obj in layer:
+                    obj_name = getattr(obj, "name", "").lower() if hasattr(obj, "name") else ""
+                    obj_type = getattr(obj, "type", "").lower() if hasattr(obj, "type") else ""
+                    if "enemy" in obj_name or "enemy" in obj_type:
+                        spawns.append((float(obj.x), float(obj.y)))
+                        logger.debug("Found enemy spawn at (%f, %f)", obj.x, obj.y)
+
+        if not spawns:
+            logger.warning("No enemy spawns found in map")
+        else:
+            logger.info("Found %d enemy spawn points", len(spawns))
+
+        return spawns
+
     def render(self, surface: pygame.Surface, camera_offset: pygame.math.Vector2) -> None:
         """
         Render visible tile layers to surface with camera offset.

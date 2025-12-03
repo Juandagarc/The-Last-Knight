@@ -5,7 +5,7 @@ Displays the game world and handles gameplay input.
 """
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 import pygame
 
@@ -13,6 +13,7 @@ from src.core.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from src.ui.screens.base_screen import BaseScreen
 from src.ui.hud import HUD
 from src.entities.player import Player
+from src.entities.enemy import Enemy
 from src.levels.level_manager import LevelManager
 from src.systems.collision import CollisionManager
 
@@ -29,11 +30,12 @@ class GameScreen(BaseScreen):
     """
     Main gameplay screen.
 
-    Manages the gameplay loop including player, level, and HUD.
+    Manages the gameplay loop including player, level, enemies, and HUD.
 
     Attributes:
         game: Reference to the Game singleton.
         player: Player entity.
+        enemies: List of enemy entities.
         level_manager: Level management system.
         collision_manager: Collision detection system.
         hud: Heads-up display.
@@ -72,6 +74,16 @@ class GameScreen(BaseScreen):
         # Initialize player
         self.player = Player(spawn_pos)
 
+        # Initialize enemies
+        self.enemies: List[Enemy] = []
+        if self.level_manager.current_level:
+            enemy_spawns = self.level_manager.current_level.get_enemy_spawns()
+            for spawn in enemy_spawns:
+                enemy = Enemy(spawn)
+                enemy.target = self.player  # Set player as target for AI
+                self.enemies.append(enemy)
+            logger.info("Spawned %d enemies", len(self.enemies))
+
         # Initialize camera
         self.camera_offset = pygame.math.Vector2(0, 0)
 
@@ -80,8 +92,9 @@ class GameScreen(BaseScreen):
         self.score = 0
 
         logger.info(
-            "GameScreen initialized with level %s",
+            "GameScreen initialized with level %s, %d enemies",
             self.level_manager.get_current_level_id(),
+            len(self.enemies),
         )
 
     def update(self, dt: float) -> None:
@@ -100,7 +113,7 @@ class GameScreen(BaseScreen):
         # Update player
         self.player.update(dt)
 
-        # Apply collision detection
+        # Apply collision detection for player
         self.player.hitbox = self.collision_manager.resolve_collisions(
             self.player.hitbox,
             self.player.velocity,
@@ -109,6 +122,19 @@ class GameScreen(BaseScreen):
         # Sync position with hitbox
         self.player.pos.x = self.player.hitbox.x
         self.player.pos.y = self.player.hitbox.y
+
+        # Update enemies
+        for enemy in self.enemies:
+            enemy.update(dt)
+            # Apply collision detection for enemy
+            enemy.hitbox = self.collision_manager.resolve_collisions(
+                enemy.hitbox,
+                enemy.velocity,
+                enemy.physics,
+            )
+            # Sync enemy position with hitbox
+            enemy.pos.x = enemy.hitbox.x
+            enemy.pos.y = enemy.hitbox.y
 
         # Update camera to follow player
         self._update_camera()
@@ -129,6 +155,14 @@ class GameScreen(BaseScreen):
         # Render level if it exists
         if self.level_manager.current_level:
             self.level_manager.current_level.render(surface, self.camera_offset)
+
+        # Render enemies with camera offset
+        for enemy in self.enemies:
+            enemy_screen_pos = enemy.pos - self.camera_offset
+            current_frame = enemy.animation.get_current_frame()
+            if current_frame:
+                enemy.image = current_frame
+                surface.blit(enemy.image, enemy_screen_pos)
 
         # Render player with camera offset
         player_screen_pos = self.player.pos - self.camera_offset
