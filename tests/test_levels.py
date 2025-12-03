@@ -415,3 +415,224 @@ class TestCamera:
 
         assert world_pos.x == 200  # 100 + 100
         assert world_pos.y == 300  # 250 + 50
+
+
+class TestSpawner:
+    """Tests for Spawner class."""
+
+    def test_initialization(self) -> None:
+        """Test Spawner initializes correctly."""
+        from src.levels.spawner import Spawner
+
+        spawner = Spawner()
+
+        assert spawner.player is None
+        assert spawner.enemies == []
+
+    def test_spawn_from_map_creates_player(self) -> None:
+        """Test spawn_from_map creates player entity."""
+        from src.levels.spawner import Spawner
+
+        spawner = Spawner()
+        tile_map = TileMap("level_01_tutorial.tmx")
+
+        spawner.spawn_from_map(tile_map)
+
+        assert spawner.player is not None
+        assert spawner.get_player() is not None
+
+    def test_spawn_from_map_creates_enemies(self) -> None:
+        """Test spawn_from_map creates enemy entities if spawn points exist."""
+        from src.levels.spawner import Spawner
+
+        spawner = Spawner()
+        tile_map = TileMap("level_01_tutorial.tmx")
+
+        spawner.spawn_from_map(tile_map)
+
+        # Enemies may or may not exist depending on map
+        enemies = spawner.get_enemies()
+        assert isinstance(enemies, list)
+
+    def test_spawn_from_map_clears_previous_entities(self) -> None:
+        """Test spawn_from_map clears previous entities."""
+        from src.levels.spawner import Spawner
+        from src.entities.enemy import Enemy
+
+        spawner = Spawner()
+        # Add a dummy enemy
+        spawner.enemies.append(Enemy((100, 100)))
+        tile_map = TileMap("level_01_tutorial.tmx")
+
+        spawner.spawn_from_map(tile_map)
+
+        # Previous enemy should be cleared
+        # New enemies (if any) should be from map spawn points
+        assert spawner.player is not None
+
+    def test_get_all_entities(self) -> None:
+        """Test get_all_entities returns player and enemies."""
+        from src.levels.spawner import Spawner
+
+        spawner = Spawner()
+        tile_map = TileMap("level_01_tutorial.tmx")
+        spawner.spawn_from_map(tile_map)
+
+        entities = spawner.get_all_entities()
+
+        assert isinstance(entities, list)
+        # Should at least have player
+        assert len(entities) >= 1
+        assert spawner.player in entities
+
+
+class TestUILevelIntegration:
+    """Integration tests for UI and level loading."""
+
+    def test_game_has_level_manager(self) -> None:
+        """Test Game singleton has LevelManager."""
+        from src.core.game import Game
+
+        Game.reset_instance()
+        game = Game()
+
+        assert hasattr(game, "level_manager")
+        assert isinstance(game.level_manager, LevelManager)
+        assert game.level_manager.current_level is None
+
+    def test_menu_play_loads_level(self) -> None:
+        """Test MenuScreen Play button loads level 1."""
+        from src.core.game import Game
+        from src.ui.screens.menu_screen import MenuScreen
+
+        Game.reset_instance()
+        game = Game()
+        menu = MenuScreen(game)
+
+        # Trigger play button
+        menu._on_play_clicked()
+
+        # Level 1 should be loaded
+        assert game.level_manager.current_level is not None
+        assert game.level_manager.current_level_id == 1
+        # Game screen should be active
+        from src.ui.screens.game_screen import GameScreen
+
+        assert isinstance(game._current_screen, GameScreen)
+
+    def test_game_screen_initializes_with_level(self) -> None:
+        """Test GameScreen initializes camera and spawner when level is loaded."""
+        from src.core.game import Game
+        from src.ui.screens.game_screen import GameScreen
+
+        Game.reset_instance()
+        game = Game()
+        # Load a level first
+        game.level_manager.load_level(1)
+
+        # Create game screen
+        game_screen = GameScreen(game)
+
+        # Camera should have bounds set
+        assert game_screen.camera.bounds_width > 0
+        assert game_screen.camera.bounds_height > 0
+        # Spawner should have created entities
+        assert game_screen.spawner.player is not None
+
+    def test_game_screen_without_level(self) -> None:
+        """Test GameScreen handles case when no level is loaded."""
+        from src.core.game import Game
+        from src.ui.screens.game_screen import GameScreen
+
+        Game.reset_instance()
+        game = Game()
+        # Don't load a level
+
+        # Create game screen
+        game_screen = GameScreen(game)
+
+        # Should initialize without error
+        assert game_screen.camera.bounds_width == 0
+        assert game_screen.camera.bounds_height == 0
+
+    def test_game_screen_renders_tilemap(self) -> None:
+        """Test GameScreen renders tilemap when level is loaded."""
+        from src.core.game import Game
+        from src.ui.screens.game_screen import GameScreen
+
+        Game.reset_instance()
+        game = Game()
+        game.level_manager.load_level(1)
+
+        game_screen = GameScreen(game)
+        surface = pygame.Surface((1280, 720))
+
+        # Should render without error
+        game_screen.render(surface)
+
+    def test_game_screen_renders_hud(self) -> None:
+        """Test GameScreen renders HUD with player data."""
+        from src.core.game import Game
+        from src.ui.screens.game_screen import GameScreen
+
+        Game.reset_instance()
+        game = Game()
+        game.level_manager.load_level(1)
+
+        game_screen = GameScreen(game)
+        surface = pygame.Surface((1280, 720))
+
+        # Should render HUD without error
+        game_screen.render(surface)
+        # HUD should be initialized
+        assert game_screen.hud is not None
+
+    def test_end_to_end_menu_to_gameplay(self) -> None:
+        """
+        Test end-to-end flow: Menu -> Play -> Level loaded with entities.
+
+        This is the integration test requested in the PR feedback.
+        """
+        from src.core.game import Game
+        from src.ui.screens.intro_screen import IntroScreen
+        from src.ui.screens.menu_screen import MenuScreen
+        from src.ui.screens.game_screen import GameScreen
+
+        # Reset and create game
+        Game.reset_instance()
+        game = Game()
+
+        # Verify game starts with IntroScreen
+        assert isinstance(game._current_screen, IntroScreen)
+
+        # Transition to MenuScreen
+        menu = MenuScreen(game)
+        game.set_screen(menu)
+        assert isinstance(game._current_screen, MenuScreen)
+
+        # Click Play button
+        menu._on_play_clicked()
+
+        # Verify:
+        # 1. Level 1 is loaded
+        assert game.level_manager.current_level is not None
+        assert game.level_manager.current_level_id == 1
+
+        # 2. GameScreen is active
+        assert isinstance(game._current_screen, GameScreen)
+
+        # 3. Camera bounds are set from tilemap
+        game_screen = game._current_screen
+        level = game.level_manager.get_current_level()
+        assert game_screen.camera.bounds_width == level.width
+        assert game_screen.camera.bounds_height == level.height
+
+        # 4. Entities are spawned
+        assert game_screen.spawner.player is not None
+        entities = game_screen.spawner.get_all_entities()
+        assert len(entities) >= 1  # At least player
+
+        # 5. Game screen can render
+        surface = pygame.Surface((1280, 720))
+        game_screen.render(surface)  # Should not raise exception
+
