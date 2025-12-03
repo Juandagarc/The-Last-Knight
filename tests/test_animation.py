@@ -352,14 +352,15 @@ class TestCreatePlaceholderFrames:
         assert frames[0].get_height() == 32
 
     def test_frames_have_varying_alpha(self) -> None:
-        """Test frames have varying alpha values."""
+        """Test frames now use full opacity for better visibility."""
         frames = create_placeholder_frames((255, 0, 0))
 
-        # Check that alpha values differ between frames
+        # All frames should have full opacity (255) for better visibility
         first_alpha = frames[0].get_at((0, 0)).a
         last_alpha = frames[-1].get_at((0, 0)).a
 
-        assert last_alpha > first_alpha
+        assert first_alpha == 255, "First frame should be fully opaque"
+        assert last_alpha == 255, "Last frame should be fully opaque"
 
     def test_frames_have_correct_color(self) -> None:
         """Test frames have correct base color."""

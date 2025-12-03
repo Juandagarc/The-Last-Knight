@@ -59,6 +59,8 @@ class TileMap:
         # Store map dimensions
         self.width = self.tmx_data.width * self.tmx_data.tilewidth
         self.height = self.tmx_data.height * self.tmx_data.tileheight
+        self.width_pixels = self.width
+        self.height_pixels = self.height
         self.tile_width = self.tmx_data.tilewidth
         self.tile_height = self.tmx_data.tileheight
 
@@ -139,6 +141,54 @@ class TileMap:
         logger.warning("Spawn point '%s' not found in map", spawn_type)
         return None
 
+    def get_player_spawn(self) -> tuple[float, float]:
+        """
+        Get player spawn point coordinates.
+
+        Returns:
+            Tuple of (x, y) coordinates for player spawn, or default (100, 100).
+        """
+        spawn = self.get_spawn_point("player_spawn")
+        if spawn is None:
+            spawn = self.get_spawn_point("player")
+        if spawn is None:
+            logger.warning("No player spawn found, using default (100, 100)")
+            spawn = (100.0, 100.0)
+        return spawn
+
+    def get_collision_tiles(self) -> list[pygame.Rect]:
+        """
+        Get collision tiles (alias for get_collision_rects).
+
+        Returns:
+            List of collision rectangles.
+        """
+        return self.get_collision_rects()
+
+    def get_enemy_spawns(self) -> list[tuple[float, float]]:
+        """
+        Get all enemy spawn points from the map.
+
+        Returns:
+            List of (x, y) coordinates for enemy spawns.
+        """
+        spawns = []
+        for layer in self.tmx_data.visible_layers:
+            if isinstance(layer, pytmx.TiledObjectGroup):
+                for obj in layer:
+                    obj_name = getattr(obj, "name", "").lower() if hasattr(obj, "name") else ""
+                    obj_type = getattr(obj, "type", "").lower() if hasattr(obj, "type") else ""
+                    if "enemy" in obj_name or "enemy" in obj_type:
+                        spawns.append((float(obj.x), float(obj.y)))
+                        logger.debug("Found enemy spawn at (%f, %f)", obj.x, obj.y)
+
+        if not spawns:
+            logger.warning("No enemy spawns found in map")
+        else:
+            logger.info("Found %d enemy spawn points", len(spawns))
+
+        return spawns
+
     def render(self, surface: pygame.Surface, camera_offset: pygame.math.Vector2) -> None:
         """
         Render visible tile layers to surface with camera offset.
@@ -148,7 +198,7 @@ class TileMap:
 
         Args:
             surface: Surface to render to.
-            camera_offset: Camera offset for scrolling (negative values).
+            camera_offset: Camera offset for scrolling.
         """
         # Render each visible layer except Collision
         for layer in self.tmx_data.visible_layers:
@@ -163,6 +213,6 @@ class TileMap:
                         tile = self.tmx_data.get_tile_image_by_gid(gid)
                         if tile:
                             # Calculate screen position with camera offset
-                            screen_x = x * self.tile_width + camera_offset.x
-                            screen_y = y * self.tile_height + camera_offset.y
+                            screen_x = x * self.tile_width - camera_offset.x
+                            screen_y = y * self.tile_height - camera_offset.y
                             surface.blit(tile, (screen_x, screen_y))

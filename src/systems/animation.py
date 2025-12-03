@@ -170,12 +170,12 @@ def create_placeholder_frames(
         num_frames: Number of frames to create.
 
     Returns:
-        List of surfaces with varying opacity.
+        List of surfaces with full opacity for better visibility.
     """
     frames = []
     for i in range(num_frames):
         surface = pygame.Surface(size, pygame.SRCALPHA)
-        alpha = 128 + int(127 * (i / num_frames))
-        surface.fill((*color, alpha))
+        # Use full opacity (255) to make player clearly visible
+        surface.fill((*color, 255))
         frames.append(surface)
     return frames
