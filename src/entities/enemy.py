@@ -71,7 +71,7 @@ class Enemy(Entity):
             speed: Movement speed.
             damage: Attack damage.
         """
-        super().__init__(pos, (32, 32))
+        super().__init__(pos, (32, 32))  # Match skeleton frame size (32x32)
 
         self.physics = PhysicsBody()
         self.animation = AnimationController()
@@ -93,18 +93,54 @@ class Enemy(Entity):
         self.change_behavior("patrol")
 
     def _setup_animations(self) -> None:
-        """Set up placeholder animations."""
-        colors = {
-            "idle": (255, 0, 0),
-            "walk": (200, 0, 0),
-            "attack": (255, 100, 0),
-            "hurt": (255, 255, 0),
-            "death": (100, 0, 0),
-        }
+        """Set up enemy animations - loads skeleton sprite frames."""
+        try:
+            # Load skeleton sprite sheet (96x96 with 3x3 grid of 32x32 frames)
+            sprite_sheet = pygame.image.load(
+                "assets/sprites/enemies/skeleton/pixel_skeleton.png"
+            ).convert_alpha()
 
-        for name, color in colors.items():
-            frames = create_placeholder_frames(color, (32, 32))
-            self.animation.add_animation(name, Animation(frames))
+            # Extract individual 32x32 frames from the 3x3 grid
+            frame_size = 32
+            frames = []
+            
+            # Extract all 9 frames (3 rows x 3 columns)
+            for row in range(3):
+                for col in range(3):
+                    frame = pygame.Surface((frame_size, frame_size), pygame.SRCALPHA)
+                    frame.blit(
+                        sprite_sheet,
+                        (0, 0),
+                        (col * frame_size, row * frame_size, frame_size, frame_size)
+                    )
+                    frames.append(frame)
+
+            # Assign frames to animations
+            # Frame layout (based on common skeleton sprite sheets):
+            # Row 0: idle frames (0, 1, 2)
+            # Row 1: walk frames (3, 4, 5)
+            # Row 2: attack frames (6, 7, 8)
+            self.animation.add_animation("idle", Animation(frames[0:3], frame_duration=0.15, loop=True))
+            self.animation.add_animation("walk", Animation(frames[3:6], frame_duration=0.1, loop=True))
+            self.animation.add_animation("attack", Animation(frames[6:9], frame_duration=0.12, loop=False))
+            self.animation.add_animation("hurt", Animation([frames[7]], frame_duration=0.2, loop=False))
+            self.animation.add_animation("death", Animation([frames[8]], frame_duration=0.3, loop=False))
+
+            logger.info("Loaded skeleton sprite animations from 3x3 grid (%d frames)", len(frames))
+        except (pygame.error, FileNotFoundError) as e:
+            # Fallback to placeholder colors
+            logger.warning("Failed to load enemy sprites, using placeholders: %s", e)
+            colors = {
+                "idle": (255, 0, 0),
+                "walk": (200, 0, 0),
+                "attack": (255, 100, 0),
+                "hurt": (255, 255, 0),
+                "death": (100, 0, 0),
+            }
+
+            for name, color in colors.items():
+                frames = create_placeholder_frames(color, (32, 32))
+                self.animation.add_animation(name, Animation(frames))
 
     def _setup_behaviors(self) -> None:
         """Set up AI behaviors."""
@@ -254,6 +290,20 @@ class Enemy(Entity):
         """
         return self.health <= 0
 
+    def render(self, surface: pygame.Surface, offset: pygame.math.Vector2) -> None:
+        """
+        Render enemy to surface with camera offset.
+
+        Args:
+            surface: Surface to render on.
+            offset: Camera offset to apply.
+        """
+        screen_pos = self.pos - offset
+        current_frame = self.animation.get_current_frame()
+        if current_frame:
+            self.image = current_frame
+            surface.blit(self.image, screen_pos)
+
 
 class SmartEnemy(Entity):
     """
@@ -299,7 +349,7 @@ class SmartEnemy(Entity):
             aggression: How aggressive the AI is (0-1).
             randomness: Randomness in decision making (0-1).
         """
-        super().__init__(pos, (32, 32))
+        super().__init__(pos, (32, 32))  # Match skeleton frame size (32x32)
 
         self.physics = PhysicsBody()
         self.animation = AnimationController()
@@ -323,20 +373,60 @@ class SmartEnemy(Entity):
         self._setup_ai()
 
     def _setup_animations(self) -> None:
-        """Set up placeholder animations."""
-        colors = {
-            "idle": (180, 0, 180),
-            "walk": (150, 0, 150),
-            "attack": (255, 0, 255),
-            "hurt": (255, 200, 255),
-            "death": (80, 0, 80),
-            "flank": (200, 100, 200),
-            "retreat": (100, 0, 100),
-        }
+        """Set up smart enemy animations - loads skeleton sprite with purple tint."""
+        try:
+            # Load skeleton sprite sheet (96x96 with 3x3 grid of 32x32 frames)
+            sprite_sheet = pygame.image.load(
+                "assets/sprites/enemies/skeleton/pixel_skeleton.png"
+            ).convert_alpha()
 
-        for name, color in colors.items():
-            frames = create_placeholder_frames(color, (32, 32))
-            self.animation.add_animation(name, Animation(frames))
+            # Extract individual 32x32 frames from the 3x3 grid
+            frame_size = 32
+            frames = []
+            
+            # Extract all 9 frames and apply purple tint
+            for row in range(3):
+                for col in range(3):
+                    frame = pygame.Surface((frame_size, frame_size), pygame.SRCALPHA)
+                    frame.blit(
+                        sprite_sheet,
+                        (0, 0),
+                        (col * frame_size, row * frame_size, frame_size, frame_size)
+                    )
+                    
+                    # Apply purple tint to differentiate smart enemies
+                    purple_overlay = pygame.Surface((frame_size, frame_size), pygame.SRCALPHA)
+                    purple_overlay.fill((100, 0, 200, 80))
+                    frame.blit(purple_overlay, (0, 0), special_flags=pygame.BLEND_RGBA_ADD)
+                    
+                    frames.append(frame)
+
+            # Assign frames to animations (same layout as Enemy)
+            self.animation.add_animation("idle", Animation(frames[0:3], frame_duration=0.15, loop=True))
+            self.animation.add_animation("walk", Animation(frames[3:6], frame_duration=0.1, loop=True))
+            self.animation.add_animation("attack", Animation(frames[6:9], frame_duration=0.12, loop=False))
+            self.animation.add_animation("hurt", Animation([frames[7]], frame_duration=0.2, loop=False))
+            self.animation.add_animation("death", Animation([frames[8]], frame_duration=0.3, loop=False))
+            self.animation.add_animation("flank", Animation(frames[3:6], frame_duration=0.09, loop=True))  # Fast walk
+            self.animation.add_animation("retreat", Animation(frames[3:6], frame_duration=0.12, loop=True))  # Slow walk
+
+            logger.info("Loaded smart enemy skeleton animations with purple tint (%d frames)", len(frames))
+        except (pygame.error, FileNotFoundError) as e:
+            # Fallback to placeholder colors
+            logger.warning("Failed to load smart enemy sprites, using placeholders: %s", e)
+            colors = {
+                "idle": (180, 0, 180),
+                "walk": (150, 0, 150),
+                "attack": (255, 0, 255),
+                "hurt": (255, 200, 255),
+                "death": (80, 0, 80),
+                "flank": (200, 100, 200),
+                "retreat": (100, 0, 100),
+            }
+
+            for name, color in colors.items():
+                frames = create_placeholder_frames(color, (32, 32))
+                self.animation.add_animation(name, Animation(frames))
 
     def _setup_ai(self) -> None:
         """Set up intelligent AI behaviors."""
@@ -518,3 +608,17 @@ class SmartEnemy(Entity):
             Aggression value (0-1).
         """
         return self.aggression
+
+    def render(self, surface: pygame.Surface, offset: pygame.math.Vector2) -> None:
+        """
+        Render smart enemy to surface with camera offset.
+
+        Args:
+            surface: Surface to render on.
+            offset: Camera offset to apply.
+        """
+        screen_pos = self.pos - offset
+        current_frame = self.animation.get_current_frame()
+        if current_frame:
+            self.image = current_frame
+            surface.blit(self.image, screen_pos)

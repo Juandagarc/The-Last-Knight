@@ -66,10 +66,13 @@ class IdleState(State):
         if input_handler.is_action_just_pressed("attack"):
             return "attack"
 
-        # Check jump
+        # Check jump - CRITICAL: Check on_ground flag
         if input_handler.is_action_just_pressed("jump"):
             if self.player.physics.on_ground:
+                logger.debug("Jump requested from idle, on_ground=%s", self.player.physics.on_ground)
                 return "jump"
+            else:
+                logger.debug("Jump blocked: not on ground (on_ground=%s)", self.player.physics.on_ground)
 
         # Check movement
         horizontal = input_handler.get_horizontal_axis()

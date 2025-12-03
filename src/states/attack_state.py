@@ -35,9 +35,9 @@ class AttackState(State):
     name = "attack"
 
     ATTACKS: Dict[int, Dict[str, Any]] = {
-        1: {"duration": 0.3, "damage": 10, "animation": "attack1"},
-        2: {"duration": 0.35, "damage": 15, "animation": "attack2"},
-        3: {"duration": 0.5, "damage": 25, "animation": "attack3"},
+        1: {"duration": 0.3, "damage": 10, "animation": "attack"},
+        2: {"duration": 0.35, "damage": 15, "animation": "attack"},
+        3: {"duration": 0.5, "damage": 25, "animation": "attack"},
     }
 
     def __init__(self, player: "Player") -> None:
@@ -114,7 +114,7 @@ class AttackState(State):
 
     def _create_attack_hitbox(self) -> None:
         """Create and store attack hitbox based on facing direction."""
-        hitbox_width = 40
+        hitbox_width = 50  # Larger hitbox for better reach
         hitbox_height = 48
 
         if self.player.facing_right:
@@ -125,6 +125,7 @@ class AttackState(State):
         y = self.player.hitbox.centery - hitbox_height // 2
 
         self.current_hitbox = pygame.Rect(x, y, hitbox_width, hitbox_height)
+        logger.debug("Attack hitbox created: %s, facing_right=%s", self.current_hitbox, self.player.facing_right)
 
     def get_attack_hitbox(self) -> Optional[pygame.Rect]:
         """

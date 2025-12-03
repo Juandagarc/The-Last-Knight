@@ -77,7 +77,10 @@ class RunState(State):
         # Check jump
         if input_handler.is_action_just_pressed("jump"):
             if self.player.physics.on_ground:
+                logger.debug("Jump requested from run, on_ground=%s", self.player.physics.on_ground)
                 return "jump"
+            else:
+                logger.debug("Jump blocked: not on ground (on_ground=%s)", self.player.physics.on_ground)
 
         # Check if no horizontal input (return to idle)
         horizontal = input_handler.get_horizontal_axis()

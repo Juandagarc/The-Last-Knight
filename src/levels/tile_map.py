@@ -84,9 +84,9 @@ class TileMap:
         """
         collision_rects: list[pygame.Rect] = []
 
-        # Find collision layer
+        # Find collision layer (check ALL layers, not just visible ones)
         collision_layer = None
-        for layer in self.tmx_data.visible_layers:
+        for layer in self.tmx_data.layers:
             if hasattr(layer, "name") and layer.name.lower() == "collision":
                 collision_layer = layer
                 break
@@ -203,8 +203,9 @@ class TileMap:
         # Render each visible layer except Collision
         for layer in self.tmx_data.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer):
-                # Skip collision layer (not meant to be rendered)
-                if layer.name.lower() == "collision":
+                # Skip collision layer (not meant to be rendered) - CRITICAL
+                layer_name = getattr(layer, 'name', '').lower()
+                if 'collision' in layer_name or layer_name == 'collision':
                     continue
 
                 # Render each tile in the layer

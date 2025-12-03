@@ -7,6 +7,8 @@ Manages player input, animation, physics, and state transitions.
 import logging
 from typing import Dict, List, Optional, Type
 
+import pygame
+
 from src.entities.entity import Entity
 from src.systems.animation import Animation, AnimationController, create_placeholder_frames
 from src.systems.input_handler import InputHandler
@@ -49,23 +51,34 @@ class Player(Entity):
         self.change_state("idle")
 
     def _setup_animations(self) -> None:
-        """Set up placeholder animations."""
-        colors = {
-            "idle": (0, 255, 0),
-            "run": (0, 200, 0),
-            "jump": (0, 150, 255),
-            "fall": (100, 100, 255),
-            "wall_slide": (255, 200, 0),
-            "wall_climb": (255, 150, 0),
-            "dash": (255, 255, 255),
-            "attack1": (255, 0, 0),
-            "attack2": (200, 0, 0),
-            "attack3": (150, 0, 0),
-        }
+        """Set up knight animations from sprite sheets."""
+        from src.core.resource_manager import ResourceManager
 
-        for name, color in colors.items():
-            frames = create_placeholder_frames(color, (48, 64))
-            self.animation.add_animation(name, Animation(frames))
+        resource_manager = ResourceManager()
+        animations = resource_manager.get_knight_animations()
+
+        if animations:
+            # Load real sprite animations
+            for name, animation in animations.items():
+                self.animation.add_animation(name, animation)
+            logger.info("Loaded %d real knight animations", len(animations))
+        else:
+            # Fallback to placeholders if loading fails
+            logger.warning("Failed to load knight sprites, using placeholders")
+            colors = {
+                "idle": (0, 255, 0),
+                "run": (0, 200, 0),
+                "jump": (0, 150, 255),
+                "fall": (100, 100, 255),
+                "wall_slide": (255, 200, 0),
+                "wall_climb": (255, 150, 0),
+                "dash": (255, 255, 255),
+                "attack": (255, 0, 0),
+            }
+
+            for name, color in colors.items():
+                frames = create_placeholder_frames(color, (48, 64))
+                self.animation.add_animation(name, Animation(frames))
 
     def _register_states(self) -> None:
         """Register all player states."""
@@ -118,13 +131,13 @@ class Player(Entity):
         Args:
             dt: Delta time in seconds.
         """
-        self.input_handler.update()
-
+        # Process FSM state transitions (includes jump input handling)
         if self.current_state:
             next_state = self.current_state.update(dt)
             if next_state:
                 self.change_state(next_state)
 
+        # Apply physics (gravity, etc.) AFTER state transitions
         self.physics.apply_gravity(dt)
         self.animation.update(dt)
         self.update_invulnerability(dt)
@@ -144,3 +157,17 @@ class Player(Entity):
         if self.current_state:
             return self.current_state.name
         return None
+
+    def render(self, surface: pygame.Surface, offset: pygame.math.Vector2) -> None:
+        """
+        Render player to surface with camera offset.
+
+        Args:
+            surface: Surface to render on.
+            offset: Camera offset to apply.
+        """
+        screen_pos = self.pos - offset
+        current_frame = self.animation.get_current_frame()
+        if current_frame:
+            self.image = current_frame
+            surface.blit(self.image, screen_pos)
