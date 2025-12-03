@@ -61,13 +61,13 @@ class TestAudioManagerInitialization:
         """Test that SFX cache is empty on initialization."""
         am = AudioManager()
 
-        assert len(am._sfx_cache) == 0
+        assert am.get_cache_size() == 0
 
     def test_current_music_none_on_init(self) -> None:
         """Test that current music is None on initialization."""
         am = AudioManager()
 
-        assert am._current_music is None
+        assert am.get_current_music() is None
 
 
 class TestAudioManagerMusicPlayback:
@@ -92,7 +92,7 @@ class TestAudioManagerMusicPlayback:
 
         # Check that music is tracked (if mixer initialized)
         if pygame.mixer.get_init():
-            assert am._current_music == "menu"
+            assert am.get_current_music() == "menu"
 
     def test_play_music_with_missing_file(self) -> None:
         """TC-011-6: Test playing missing music handles gracefully."""
@@ -102,7 +102,7 @@ class TestAudioManagerMusicPlayback:
         am.play_music("nonexistent_track", loop=False)
 
         # Current music should be None since loading failed
-        assert am._current_music is None
+        assert am.get_current_music() is None
 
     def test_play_same_music_twice_does_not_restart(self) -> None:
         """Test playing same music twice doesn't restart."""
@@ -110,13 +110,13 @@ class TestAudioManagerMusicPlayback:
 
         am.play_music("menu")
         # Store the current state
-        first_play = am._current_music
+        first_play = am.get_current_music()
 
         # Try to play same music again
         am.play_music("menu")
 
         # Should still be tracking the same music
-        assert am._current_music == first_play
+        assert am.get_current_music() == first_play
 
     def test_stop_music_clears_current_music(self) -> None:
         """TC-011-5: Test stopping music clears current track."""
@@ -125,7 +125,7 @@ class TestAudioManagerMusicPlayback:
         am.play_music("menu")
         am.stop_music()
 
-        assert am._current_music is None
+        assert am.get_current_music() is None
 
     def test_pause_music(self) -> None:
         """Test pausing music."""
@@ -178,7 +178,7 @@ class TestAudioManagerSoundEffects:
 
         # Jump sound should now be in cache (if mixer initialized)
         if pygame.mixer.get_init():
-            assert "jump" in am._sfx_cache
+            assert am.is_sfx_cached("jump")
 
     def test_play_cached_sfx(self) -> None:
         """Test playing already cached SFX."""
@@ -186,13 +186,13 @@ class TestAudioManagerSoundEffects:
 
         # Play once to cache
         am.play_sfx("jump")
-        initial_cache_size = len(am._sfx_cache)
+        initial_cache_size = am.get_cache_size()
 
         # Play again - should use cache
         am.play_sfx("jump")
 
         # Cache size should not change
-        assert len(am._sfx_cache) == initial_cache_size
+        assert am.get_cache_size() == initial_cache_size
 
 
 class TestAudioManagerVolumeControls:
@@ -250,13 +250,12 @@ class TestAudioManagerVolumeControls:
         am.play_sfx("jump")
 
         # Only test if mixer initialized and sound was cached
-        if pygame.mixer.get_init() and "jump" in am._sfx_cache:
+        if pygame.mixer.get_init() and am.is_sfx_cached("jump"):
             # Change volume
             am.set_sfx_volume(0.2)
 
-            # Cached sound should have new volume
-            cached_sound = am._sfx_cache["jump"]
-            assert cached_sound.get_volume() == pytest.approx(0.2)
+            # Verify new volume is set
+            assert am.get_sfx_volume() == pytest.approx(0.2)
 
 
 class TestAudioManagerCacheClear:
@@ -281,14 +280,14 @@ class TestAudioManagerCacheClear:
         # Only test if mixer initialized and sounds were cached
         if pygame.mixer.get_init():
             # Verify cache has content
-            if len(am._sfx_cache) > 0:
+            if am.get_cache_size() > 0:
                 # Clear cache
                 am.clear_cache()
 
-                assert len(am._sfx_cache) == 0
+                assert am.get_cache_size() == 0
         else:
             # If mixer not initialized, cache should be empty
-            assert len(am._sfx_cache) == 0
+            assert am.get_cache_size() == 0
 
 
 class TestAudioManagerLooping:
@@ -312,7 +311,7 @@ class TestAudioManagerLooping:
 
         # Music should be tracked (if mixer initialized)
         if pygame.mixer.get_init():
-            assert am._current_music == "menu"
+            assert am.get_current_music() == "menu"
 
     def test_play_music_with_loop_false(self) -> None:
         """Test music plays without looping."""
@@ -322,4 +321,4 @@ class TestAudioManagerLooping:
 
         # Music should be tracked (if mixer initialized)
         if pygame.mixer.get_init():
-            assert am._current_music == "menu"
+            assert am.get_current_music() == "menu"

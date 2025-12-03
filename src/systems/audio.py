@@ -9,7 +9,13 @@ from typing import Optional, Dict
 
 import pygame
 
-from src.core.settings import AUDIO_PATH, MUSIC_VOLUME, SFX_VOLUME
+from src.core.settings import (
+    AUDIO_PATH,
+    MUSIC_VOLUME,
+    SFX_VOLUME,
+    AUDIO_FREQUENCY,
+    AUDIO_BUFFER_SIZE,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +58,12 @@ class AudioManager:
         # Initialize pygame mixer if not already initialized
         if not pygame.mixer.get_init():
             try:
-                pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=512)
+                pygame.mixer.init(
+                    frequency=AUDIO_FREQUENCY,
+                    size=-16,
+                    channels=2,
+                    buffer=AUDIO_BUFFER_SIZE,
+                )
                 logger.info("Pygame mixer initialized")
             except pygame.error as e:
                 logger.error("Failed to initialize pygame mixer: %s", e)
@@ -191,6 +202,36 @@ class AudioManager:
             Current SFX volume (0.0-1.0).
         """
         return self._sfx_volume
+
+    def get_current_music(self) -> Optional[str]:
+        """
+        Get currently playing music track name.
+
+        Returns:
+            Current music track name or None if no music is playing.
+        """
+        return self._current_music
+
+    def is_sfx_cached(self, sound_name: str) -> bool:
+        """
+        Check if a sound effect is in the cache.
+
+        Args:
+            sound_name: Name of the sound effect to check.
+
+        Returns:
+            True if sound is cached, False otherwise.
+        """
+        return sound_name in self._sfx_cache
+
+    def get_cache_size(self) -> int:
+        """
+        Get the number of cached sound effects.
+
+        Returns:
+            Number of sounds in the cache.
+        """
+        return len(self._sfx_cache)
 
     def clear_cache(self) -> None:
         """Clear the sound effects cache."""
