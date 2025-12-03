@@ -357,7 +357,10 @@ class TestGameScreen:
         screen = GameScreen(game)
         
         assert screen.game is game
-        assert screen.font is not None
+        assert screen.player is not None
+        assert screen.hud is not None
+        assert screen.level_manager is not None
+        assert screen.collision_manager is not None
     
     def test_game_screen_renders(self, mock_screen: pygame.Surface) -> None:
         """Test game screen renders without errors."""

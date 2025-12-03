@@ -5,13 +5,17 @@ Displays the game world and handles gameplay input.
 """
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import pygame
 
 from src.core.resource_manager import ResourceManager
 from src.core.settings import SCREEN_WIDTH, SCREEN_HEIGHT, WHITE
 from src.ui.screens.base_screen import BaseScreen
+from src.ui.hud import HUD
+from src.entities.player import Player
+from src.levels.level_manager import LevelManager
+from src.systems.collision import CollisionManager
 
 if TYPE_CHECKING:
     from src.core.game import Game
@@ -23,11 +27,17 @@ class GameScreen(BaseScreen):
     """
     Main gameplay screen.
 
-    This screen will contain the actual game logic, player, enemies, etc.
-    For now, it's a placeholder that shows instructions and can be paused.
+    Manages the gameplay loop including player, level, and HUD.
 
     Attributes:
         game: Reference to the Game singleton.
+        player: Player entity.
+        level_manager: Level management system.
+        collision_manager: Collision detection system.
+        hud: Heads-up display.
+        camera_offset: Camera offset for following player.
+        game_time: Elapsed game time in seconds.
+        score: Current player score.
     """
 
     def __init__(self, game: "Game") -> None:
@@ -39,11 +49,35 @@ class GameScreen(BaseScreen):
         """
         super().__init__(game)
 
-        # Load font
-        resource_manager = ResourceManager()
-        self.font = resource_manager.load_font("assets/fonts/PressStart2P-Regular.ttf", 24)
+        # Initialize HUD
+        self.hud = HUD()
 
-        logger.info("GameScreen initialized")
+        # Initialize level manager and load first level
+        self.level_manager = LevelManager()
+        self.level_manager.load_level(1)
+
+        # Initialize collision manager
+        self.collision_manager = CollisionManager()
+        if self.level_manager.current_level:
+            collision_tiles = self.level_manager.current_level.get_collision_tiles()
+            self.collision_manager.set_tiles(collision_tiles)
+
+        # Get spawn position from level or use default
+        spawn_pos = (100.0, 100.0)
+        if self.level_manager.current_level:
+            spawn_pos = self.level_manager.current_level.get_player_spawn()
+
+        # Initialize player
+        self.player = Player(spawn_pos)
+
+        # Initialize camera
+        self.camera_offset = pygame.math.Vector2(0, 0)
+
+        # Initialize game state
+        self.game_time = 0.0
+        self.score = 0
+
+        logger.info("GameScreen initialized with level %s", self.level_manager.get_current_level_id())
 
     def update(self, dt: float) -> None:
         """
@@ -52,8 +86,36 @@ class GameScreen(BaseScreen):
         Args:
             dt: Delta time since last frame in seconds.
         """
-        # TODO: Update game entities, physics, etc.
-        pass
+        # Update game time
+        self.game_time += dt
+
+        # Update player input
+        self.player.input_handler.update()
+
+        # Update player
+        self.player.update(dt)
+
+        # Apply collision detection
+        self.player.hitbox = self.collision_manager.resolve_collisions(
+            self.player.hitbox,
+            self.player.velocity,
+            self.player.physics,
+        )
+        # Sync position with hitbox
+        self.player.pos.x = self.player.hitbox.x
+        self.player.pos.y = self.player.hitbox.y
+
+        # Update camera to follow player
+        self._update_camera()
+
+        # Update HUD
+        player_data = {
+            "health": getattr(self.player, "health", 100),
+            "max_health": getattr(self.player, "max_health", 100),
+            "score": self.score,
+            "time": self.game_time,
+        }
+        self.hud.update(player_data)
 
     def render(self, surface: pygame.Surface) -> None:
         """
@@ -62,26 +124,44 @@ class GameScreen(BaseScreen):
         Args:
             surface: Surface to render on.
         """
-        # Fill background with dark gray
-        surface.fill((40, 40, 40))
+        # Fill background
+        surface.fill((40, 40, 60))
 
-        # Render placeholder text
-        text_lines = [
-            "Game Screen",
-            "",
-            "Press P to Pause",
-            "",
-            "Gameplay will be",
-            "integrated here",
-        ]
+        # Render level if it exists
+        if self.level_manager.current_level:
+            self.level_manager.current_level.render(surface, self.camera_offset)
 
-        y_offset = SCREEN_HEIGHT // 3
-        for line in text_lines:
-            if line:  # Skip empty lines
-                text_surface = self.font.render(line, True, WHITE)
-                text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, y_offset))
-                surface.blit(text_surface, text_rect)
-            y_offset += 40
+        # Render player with camera offset
+        player_screen_pos = self.player.pos - self.camera_offset
+        self.player.image = self.player.animation.get_current_frame()
+        surface.blit(self.player.image, player_screen_pos)
+
+        # Render HUD on top
+        player_data = {
+            "health": getattr(self.player, "health", 100),
+            "max_health": getattr(self.player, "max_health", 100),
+            "score": self.score,
+            "time": self.game_time,
+        }
+        self.hud.render(surface, player_data)
+
+    def _update_camera(self) -> None:
+        """Update camera position to follow player."""
+        # Center camera on player
+        target_x = self.player.pos.x - SCREEN_WIDTH // 2
+        target_y = self.player.pos.y - SCREEN_HEIGHT // 2
+
+        # Smooth camera movement (lerp)
+        self.camera_offset.x += (target_x - self.camera_offset.x) * 0.1
+        self.camera_offset.y += (target_y - self.camera_offset.y) * 0.1
+
+        # Clamp camera to level bounds if level exists
+        if self.level_manager.current_level:
+            level_width = self.level_manager.current_level.width_pixels
+            level_height = self.level_manager.current_level.height_pixels
+
+            self.camera_offset.x = max(0, min(self.camera_offset.x, level_width - SCREEN_WIDTH))
+            self.camera_offset.y = max(0, min(self.camera_offset.y, level_height - SCREEN_HEIGHT))
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """
