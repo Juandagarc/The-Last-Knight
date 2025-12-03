@@ -120,16 +120,18 @@ class GameScreen(BaseScreen):
             # Render entities
             player = self.spawner.get_player()
             if player:
-                # Render player
+                # Render player at screen position
                 player_screen_pos = self.camera.world_to_screen(player.pos)
-                player.rect.topleft = (int(player_screen_pos.x), int(player_screen_pos.y))
-                surface.blit(player.image, player.rect)
+                surface.blit(
+                    player.image, (int(player_screen_pos.x), int(player_screen_pos.y))
+                )
 
-                # Render enemies
+                # Render enemies at screen positions
                 for enemy in self.spawner.get_enemies():
                     enemy_screen_pos = self.camera.world_to_screen(enemy.pos)
-                    enemy.rect.topleft = (int(enemy_screen_pos.x), int(enemy_screen_pos.y))
-                    surface.blit(enemy.image, enemy.rect)
+                    surface.blit(
+                        enemy.image, (int(enemy_screen_pos.x), int(enemy_screen_pos.y))
+                    )
 
             # Render HUD
             if player:

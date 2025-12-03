@@ -88,14 +88,14 @@ class Spawner:
         """
         return self.enemies
 
-    def get_all_entities(self) -> list:
+    def get_all_entities(self) -> list[Player | Enemy]:
         """
         Get all spawned entities.
 
         Returns:
             List of all entities (player + enemies).
         """
-        entities: list = []
+        entities: list[Player | Enemy] = []
         if self.player:
             entities.append(self.player)
         entities.extend(self.enemies)
