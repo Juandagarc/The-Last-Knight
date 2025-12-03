@@ -21,6 +21,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+# Camera settings
+CAMERA_SMOOTHING = 0.1
+
 
 class GameScreen(BaseScreen):
     """
@@ -77,7 +80,8 @@ class GameScreen(BaseScreen):
         self.score = 0
 
         logger.info(
-            "GameScreen initialized with level %s", self.level_manager.get_current_level_id()
+            "GameScreen initialized with level %s",
+            self.level_manager.get_current_level_id(),
         )
 
     def update(self, dt: float) -> None:
@@ -110,13 +114,7 @@ class GameScreen(BaseScreen):
         self._update_camera()
 
         # Update HUD
-        player_data = {
-            "health": getattr(self.player, "health", 100),
-            "max_health": getattr(self.player, "max_health", 100),
-            "score": self.score,
-            "time": self.game_time,
-        }
-        self.hud.update(player_data)
+        self.hud.update(self._get_player_data())
 
     def render(self, surface: pygame.Surface) -> None:
         """
@@ -140,13 +138,21 @@ class GameScreen(BaseScreen):
             surface.blit(self.player.image, player_screen_pos)
 
         # Render HUD on top
-        player_data = {
-            "health": getattr(self.player, "health", 100),
-            "max_health": getattr(self.player, "max_health", 100),
+        self.hud.render(surface, self._get_player_data())
+
+    def _get_player_data(self) -> dict:
+        """
+        Get player data for HUD display.
+
+        Returns:
+            Dictionary containing player health, score, and time.
+        """
+        return {
+            "health": self.player.health,
+            "max_health": self.player.max_health,
             "score": self.score,
             "time": self.game_time,
         }
-        self.hud.render(surface, player_data)
 
     def _update_camera(self) -> None:
         """Update camera position to follow player."""
@@ -155,8 +161,8 @@ class GameScreen(BaseScreen):
         target_y = self.player.pos.y - SCREEN_HEIGHT // 2
 
         # Smooth camera movement (lerp)
-        self.camera_offset.x += (target_x - self.camera_offset.x) * 0.1
-        self.camera_offset.y += (target_y - self.camera_offset.y) * 0.1
+        self.camera_offset.x += (target_x - self.camera_offset.x) * CAMERA_SMOOTHING
+        self.camera_offset.y += (target_y - self.camera_offset.y) * CAMERA_SMOOTHING
 
         # Clamp camera to level bounds if level exists
         if self.level_manager.current_level:
